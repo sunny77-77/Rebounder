@@ -68,6 +68,8 @@
         const AlertTriangle = (props) => <IconBase {...props}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></IconBase>;
         const Lightbulb = (props) => <IconBase {...props}><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-1 1.5-2.4 1.5-3.8 0-3.2-2.6-5.8-5.8-5.8-3.2 0-5.8 2.6-5.8 5.8 0 1.4.5 2.8 1.5 3.8.8.8 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></IconBase>;
         const HelpCircle = (props) => <IconBase {...props}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></IconBase>;
+        const History = (props) => <IconBase {...props}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></IconBase>;
+        const ExternalLink = (props) => <IconBase {...props}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></IconBase>;
 
         // --- Data ---
 
@@ -104,7 +106,7 @@
             aiDiagnosis: {
               probability: 65,
               natureTag: 'EXTERNAL', 
-              conclusion: '受中東戰事影響，外資為了避險才賣股，不是台積電壞掉。這種「無辜受累」的急跌，通常是送分題。',
+              conclusion: '受國際局勢影響導致外資避險賣出，這並非公司營運出問題，而是外部因素造成的非理性下跌。',
               reasons: [
                 '外資避險賣壓：因應中東地緣局勢升溫，外資單日提款 1.5 萬張。',
                 '費半連動：美股 SOX 指數重挫 4.2%，拖累半導體權值股。',
@@ -114,7 +116,16 @@
               volumeStatus: '量縮整理',
               potentialUpside: 13, 
               strategy: '建議觀望，待站回五日線後分批佈局。'
-            }
+            },
+            similarHistory: [
+              { event: '2022 俄烏戰爭爆發', outcome: '股價急跌 15% 後，於 2 個月內收復失土並創新高。' },
+              { event: '2020 疫情恐慌', outcome: 'V 型反轉，確認為該年度最佳買點。' }
+            ],
+            newsLinks: [
+              { title: '外資觀點：地緣風險不影響 2nm 領先地位', source: '財經日報' },
+              { title: '台積電法說會前瞻：先進製程需求強勁', source: '科技新報' },
+              { title: '全球半導體庫存去化順利，Q1 可望落底', source: '投資人周刊' }
+            ]
           },
           {
             id: '2454',
@@ -145,7 +156,7 @@
             aiDiagnosis: {
               probability: 85,
               natureTag: 'SHORT_TERM',
-              conclusion: '貨只是晚一個月出，訂單沒跑掉！趁市場誤以為利空而拋售時，跟著主力大戶悄悄佈局，勝率很高。',
+              conclusion: '產品僅是延後出貨而非訂單消失，雖然市場因誤解而拋售，但大戶資金已開始逢低承接。',
               reasons: [
                 '營收遞延效應：5G 旗艦晶片出貨遞延至 2月，導致 1月營收月減 12%。',
                 '謠言澄清：市場傳聞陸系手機砍單，公司已發重訊嚴正否認。',
@@ -155,7 +166,15 @@
               volumeStatus: '窒息量',
               potentialUpside: 17, 
               strategy: 'Strong Buy。建議分 3 日進場，首筆資金可於今日尾盤投入。'
-            }
+            },
+            similarHistory: [
+              { event: '2021 供應鏈缺料疑慮', outcome: '澄清後股價連三紅，單周反彈 8%。' }
+            ],
+            newsLinks: [
+              { title: '聯發科天璣 9500 實測數據曝光，效能超預期', source: '3C 科技網' },
+              { title: '大摩重申聯發科「優於大盤」評等，目標價不變', source: '外資觀測站' },
+              { title: '中國手機市場復甦，旗艦晶片需求看增', source: '產業快訊' }
+            ]
           },
           {
             id: '3037',
@@ -186,7 +205,7 @@
             aiDiagnosis: {
               probability: 70,
               natureTag: 'EXTERNAL',
-              conclusion: '日本對手財報不好看，嚇得散戶恐慌殺出（多殺多）。現在還在「大逃殺」階段，先在旁邊看戲，等沒人賣了再進場。',
+              conclusion: '受到同業負面消息拖累，引發投資人恐慌性賣出，導致目前籌碼狀態仍處於不穩定階段。',
               reasons: [
                 '報價鬆動疑慮：日商 Ibiden 財報示警 ABF 需求放緩，引發族群修正。',
                 '融資斷頭：融資維持率跌破 140% 警戒線，觸發散戶多殺多。',
@@ -196,7 +215,15 @@
               volumeStatus: '爆量下殺',
               potentialUpside: 25,
               strategy: '急跌不接刀。待成交量縮至 5000 張以下再行介入。'
-            }
+            },
+            similarHistory: [
+              { event: '2023 庫存去化修正', outcome: '股價盤整 3 個月後才築底完成，屬L型復甦。' }
+            ],
+            newsLinks: [
+              { title: 'ABF 載板報價鬆動？業內人士：僅部分低階產品', source: '電子時報' },
+              { title: '投信季底結帳名單出列，PCB 族群首當其衝', source: '理財網' },
+              { title: 'Ibiden 財報不如預期，拖累亞洲載板股', source: '國際財經' }
+            ]
           },
           {
             id: '8298',
@@ -223,7 +250,7 @@
             aiDiagnosis: {
               probability: 10,
               natureTag: 'STRUCTURAL',
-              conclusion: '帳目不清、會計師這關過不了，這是公司「心臟病發」。這種跌停是真出事，千萬別以為便宜就去接，會接滿手血。',
+              conclusion: '由於帳目問題尚待釐清，公司財務結構存在高度不確定性，這屬於企業本質上的風險。',
               reasons: [
                 '會計師保留意見：無法釐清海外子公司 5 億元帳款流向，財報卡關。',
                 '大股東拋售：董事長配偶申報轉讓持股 2,000 張，引發掏空疑慮。',
@@ -233,7 +260,15 @@
               volumeStatus: '無量跌停',
               potentialUpside: 0,
               strategy: '賣出。不搶反彈。'
-            }
+            },
+            similarHistory: [
+              { event: '2020 康友-KY 事件', outcome: '財報造假爆發後連續跌停，最終下市。' }
+            ],
+            newsLinks: [
+              { title: '地雷KY 重訊記者會：無法解釋資金流向', source: '證交所' },
+              { title: '金管會介入調查，地雷KY 恐面臨暫停交易', source: '新聞頭條' },
+              { title: '小股東自救會成立，擬對經營層提告', source: '社會新聞' }
+            ]
           }
         ];
 
@@ -310,11 +345,11 @@
         function NatureBadge({ tag }) {
           switch(tag) {
             case 'SHORT_TERM': 
-              return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold text-xs border border-green-200 flex items-center gap-1">🟢 短期意外</span>;
+              return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold text-xs border border-green-200 inline-flex items-center gap-1">🟢 短期意外</span>;
             case 'EXTERNAL': 
-              return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full font-bold text-xs border border-yellow-200 flex items-center gap-1">🟡 外部環境</span>;
+              return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full font-bold text-xs border border-yellow-200 inline-flex items-center gap-1">🟡 外部環境</span>;
             case 'STRUCTURAL': 
-              return <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full font-bold text-xs border border-red-200 flex items-center gap-1">🔴 結構損壞</span>;
+              return <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full font-bold text-xs border border-red-200 inline-flex items-center gap-1">🔴 結構損壞</span>;
             default: return null;
           }
         }
@@ -340,11 +375,6 @@
                   </div>
                   <div>
                     <h3 className="font-bold text-slate-800 text-lg leading-tight group-hover:text-indigo-600 transition-colors">{stock.name}</h3>
-                    {isPassed && (
-                       <div className="mt-1">
-                         <NatureBadge tag={stock.aiDiagnosis.natureTag} />
-                       </div>
-                    )}
                   </div>
                 </div>
                 
@@ -358,7 +388,10 @@
 
               {/* Conclusion Comment */}
               {isPassed && (
-                <div className="mt-2 mb-3 p-2 bg-slate-50 rounded-lg border border-slate-100">
+                <div className="mt-2 mb-3 p-3 bg-slate-50 rounded-lg border border-slate-100">
+                   <div className="mb-2">
+                      <NatureBadge tag={stock.aiDiagnosis.natureTag} />
+                   </div>
                    <div className="flex items-start gap-2">
                       <Lightbulb size={14} className="text-indigo-500 mt-0.5 shrink-0" />
                       <span className="text-sm text-slate-700 font-medium leading-tight">
@@ -535,7 +568,7 @@
                  </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-6">
                  <div className="flex flex-col gap-2 mb-4">
                     <div className="flex justify-between items-center">
                         <h3 className="font-bold text-slate-800 flex items-center gap-2">
@@ -568,6 +601,60 @@
                    </ResponsiveContainer>
                  </div>
               </div>
+
+              {/* History Section */}
+              {stock.similarHistory && (
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                    <div className="bg-slate-50 p-4 border-b border-slate-100">
+                        <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                            <History size={18} />
+                            歷史借鏡：相似事件回顧
+                        </h3>
+                    </div>
+                    <div className="p-4">
+                        <div className="space-y-3">
+                            {stock.similarHistory.map((item, idx) => (
+                                <div key={idx} className="flex gap-3 items-start p-2 hover:bg-slate-50 rounded transition-colors">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-300 mt-2 shrink-0"></div>
+                                    <div>
+                                        <div className="font-bold text-sm text-slate-700">{item.event}</div>
+                                        <div className="text-xs text-slate-500 mt-0.5">{item.outcome}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+              )}
+
+              {/* External News Section */}
+              {stock.newsLinks && (
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div className="bg-slate-50 p-4 border-b border-slate-100">
+                        <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                            <Activity size={18} />
+                            市場焦點：相關新聞
+                        </h3>
+                    </div>
+                    <div className="divide-y divide-slate-100">
+                        {stock.newsLinks.map((link, idx) => (
+                            <a href={link.url} key={idx} className="block p-4 hover:bg-slate-50 transition-colors group">
+                                <div className="flex justify-between items-start gap-4">
+                                    <div>
+                                        <div className="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors line-clamp-1">
+                                            {link.title}
+                                        </div>
+                                        <div className="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                                            <span>{link.source}</span>
+                                        </div>
+                                    </div>
+                                    <ExternalLink size={14} className="text-slate-300 group-hover:text-indigo-400 shrink-0 mt-1" />
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+              )}
               
             </div>
           );
@@ -588,11 +675,7 @@
 
           const filteredStocks = processedStocks.filter(stock => {
             const matchesSearch = stock.name.includes(searchQuery) || stock.id.includes(searchQuery);
-            if (strictMode) {
-                return matchesSearch && stock.analysis.isPassed;
-            } else {
-                return matchesSearch && stock.analysis.triggerTypes.length > 0;
-            }
+            return matchesSearch && stock.analysis.triggerTypes.length > 0;
           });
 
           return (
@@ -620,19 +703,10 @@
                   <div className="animate-in fade-in duration-300">
                     <div className="mb-8">
                       <h1 className="text-2xl font-bold text-slate-900 mb-2">逆轉股票</h1>
-                      <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
-                         <span className="bg-white inline-flex items-center gap-1 px-3 py-1 rounded-full border border-slate-200 shadow-sm">
-                            <Activity size={14} className="text-orange-500" />
-                            <span>大盤 Beta 校正閥值: {(MARKET_DROP_TODAY * 1.5).toFixed(2)}%</span>
-                         </span>
-                         <span className="bg-indigo-50 text-indigo-700 inline-flex items-center gap-1 px-3 py-1 rounded-full border border-indigo-100 shadow-sm font-medium">
-                            核心層：流動性 + 獲利安全
-                         </span>
-                      </div>
                     </div>
 
                     <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
-                      <div className="relative w-full md:w-64">
+                      <div className="relative w-full">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
                         <input 
                           type="text" 
@@ -641,20 +715,6 @@
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                         />
-                      </div>
-
-                      <div className="flex gap-4 w-full md:w-auto">
-                        <button 
-                          onClick={() => setStrictMode(!strictMode)}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all whitespace-nowrap w-full md:w-auto justify-center ${
-                            strictMode 
-                              ? 'bg-slate-900 border-slate-900 text-white shadow-md' 
-                              : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
-                          }`}
-                        >
-                          <ShieldCheck size={18} />
-                          <span>核心過濾 (Survival): {strictMode ? '已開啟' : '顯示全部'}</span>
-                        </button>
                       </div>
                     </div>
 
