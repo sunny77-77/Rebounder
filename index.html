@@ -1,717 +1,701 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="zh-TW">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2487.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rebounder 逆轉股票 - AI 診斷系統</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM (Pinned to stable 18.2.0) -->
+    <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    
+    <!-- PropTypes (Required for Recharts UMD build) -->
+    <script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
+    
+    <!-- Recharts (Pinned to stable 2.12.3) -->
+    <script src="https://unpkg.com/recharts@2.12.3/umd/Recharts.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        /* 自定義捲軸樣式 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Tooltip 動畫 */
+        .tooltip-content {
+            transition: opacity 0.2s, transform 0.2s;
+            transform: translateY(4px);
+        }
+        .group\/info:hover .tooltip-content,
+        .group\/marker:hover .tooltip-content {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+    </style>
 </head>
-<body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="zh-TW"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Rebounder 逆轉股票 - AI 診斷系統&lt;/title&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Tailwind CSS --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- React &amp; ReactDOM (Pinned to stable 18.2.0) --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"&gt;&lt;/script&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- PropTypes (Required for Recharts UMD build) --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://unpkg.com/prop-types/prop-types.min.js"&gt;&lt;/script&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Recharts (Pinned to stable 2.12.3) --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://unpkg.com/recharts@2.12.3/umd/Recharts.js"&gt;&lt;/script&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Babel for JSX --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://unpkg.com/@babel/standalone/babel.min.js"&gt;&lt;/script&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* 自定義捲軸樣式 */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>::-webkit-scrollbar { width: 6px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>::-webkit-scrollbar-track { background: #f1f5f9; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>::-webkit-scrollbar-thumb:hover { background: #94a3b8; }</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* Tooltip 動畫 */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tooltip-content {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transition: opacity 0.2s, transform 0.2s;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(4px);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.group\/info:hover .tooltip-content,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.group\/marker:hover .tooltip-content {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>opacity: 1;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>pointer-events: auto;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(0);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body class="bg-slate-50 text-slate-900"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="root"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script type="text/babel"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const { useState, useMemo } = React;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const {<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, AreaChart, Area<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>} = Recharts;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// --- Icons (Inline SVGs) ---</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const IconBase = ({ children, size = 24, className = "", ...props }) =&gt; (</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}&gt;{children}&lt;/svg&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const Search = (props) =&gt; &lt;IconBase {...props}&gt;&lt;circle cx="11" cy="11" r="8"/&gt;&lt;path d="m21 21-4.3-4.3"/&gt;&lt;/IconBase&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const ShieldCheck = (props) =&gt; &lt;IconBase {...props}&gt;&lt;path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/&gt;&lt;path d="m9 12 2 2 4-4"/&gt;&lt;/IconBase&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const ArrowLeft = (props) =&gt; &lt;IconBase {...props}&gt;&lt;path d="m12 19-7-7 7-7"/&gt;&lt;path d="M19 12H5"/&gt;&lt;/IconBase&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const Activity = (props) =&gt; &lt;IconBase {...props}&gt;&lt;path d="M22 12h-4l-3 9L9 3l-3 9H2"/&gt;&lt;/IconBase&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const Microscope = (props) =&gt; &lt;IconBase {...props}&gt;&lt;path d="M6 18h8"/&gt;&lt;path d="M3 22h18"/&gt;&lt;path d="M14 22a7 7 0 1 0 0-14h-1"/&gt;&lt;path d="M9 14h2"/&gt;&lt;path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/&gt;&lt;path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/&gt;&lt;/IconBase&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const CheckCircle = (props) =&gt; &lt;IconBase {...props}&gt;&lt;path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/&gt;&lt;path d="m9 11 3 3L22 4"/&gt;&lt;/IconBase&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const XCircle = (props) =&gt; &lt;IconBase {...props}&gt;&lt;circle cx="12" cy="12" r="10"/&gt;&lt;path d="m15 9-6 6"/&gt;&lt;path d="m9 9 6 6"/&gt;&lt;/IconBase&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const Gauge = (props) =&gt; &lt;IconBase {...props}&gt;&lt;path d="m12 14 4-4"/&gt;&lt;path d="M3.34 19a10 10 0 1 1 17.32 0"/&gt;&lt;/IconBase&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const Calendar = (props) =&gt; &lt;IconBase {...props}&gt;&lt;rect width="18" height="18" x="3" y="4" rx="2" ry="2"/&gt;&lt;line x1="16" x2="16" y1="2" y2="6"/&gt;&lt;line x1="8" x2="8" y1="2" y2="6"/&gt;&lt;line x1="3" x2="21" y1="10" y2="10"/&gt;&lt;/IconBase&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const Target = (props) =&gt; &lt;IconBase {...props}&gt;&lt;circle cx="12" cy="12" r="10"/&gt;&lt;circle cx="12" cy="12" r="6"/&gt;&lt;circle cx="12" cy="12" r="2"/&gt;&lt;/IconBase&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const AlertTriangle = (props) =&gt; &lt;IconBase {...props}&gt;&lt;path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/&gt;&lt;line x1="12" x2="12" y1="9" y2="13"/&gt;&lt;line x1="12" x2="12.01" y1="17" y2="17"/&gt;&lt;/IconBase&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const Lightbulb = (props) =&gt; &lt;IconBase {...props}&gt;&lt;path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-1 1.5-2.4 1.5-3.8 0-3.2-2.6-5.8-5.8-5.8-3.2 0-5.8 2.6-5.8 5.8 0 1.4.5 2.8 1.5 3.8.8.8 1.3 1.5 1.5 2.5"/&gt;&lt;path d="M9 18h6"/&gt;&lt;path d="M10 22h4"/&gt;&lt;/IconBase&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const HelpCircle = (props) =&gt; &lt;IconBase {...props}&gt;&lt;circle cx="12" cy="12" r="10"/&gt;&lt;path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/&gt;&lt;path d="M12 17h.01"/&gt;&lt;/IconBase&gt;;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// --- Data ---</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>const MARKET_DROP_TODAY = -1.5;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>const MARKET_INDEX = 30288;<span class="Apple-converted-space">       </span></p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>const INITIAL_STOCKS = [</p>
-<p class="p1"><span class="Apple-converted-space">          </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>id: '2330',</p>
-<p class="p1"><span class="Apple-converted-space">            </span>name: '台積電',</p>
-<p class="p1"><span class="Apple-converted-space">            </span>price: 1680, <span class="Apple-converted-space">           </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>low: 1675,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>change: -2.0, <span class="Apple-converted-space">         </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>volume: 31237,<span class="Apple-converted-space">         </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>avgVolume5dVal: 480,<span class="Apple-converted-space">   </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>priceAvg20d: 1700,<span class="Apple-converted-space">     </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>priceAvg60d: 1720,<span class="Apple-converted-space">     </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>bollingerLower: 1650, <span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>marketCapVal: 435700,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>rsi6: 35, <span class="Apple-converted-space">             </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>netBuy5d: -5000,<span class="Apple-converted-space">       </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>institutionalHoldings: 78,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>eps4Q: 61.2,<span class="Apple-converted-space">           </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>roe: 28.5,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isExDividend: false,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sector: '半導體',</p>
-<p class="p1"><span class="Apple-converted-space">            </span>panicLevel: 35,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>fairValue: 1900,<span class="Apple-converted-space">       </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>resistancePrice: 1750,<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>history: [</p>
-<p class="p1"><span class="Apple-converted-space">              </span>{ date: '01/06', price: 1705 }, { date: '01/07', price: 1695 }, { date: '01/08', price: 1700 },</p>
-<p class="p1"><span class="Apple-converted-space">              </span>{ date: '01/09', price: 1680 }, { date: '01/10', price: 1685 }, { date: '01/12', price: 1680 },</p>
-<p class="p1"><span class="Apple-converted-space">            </span>],</p>
-<p class="p1"><span class="Apple-converted-space">            </span>aiDiagnosis: {</p>
-<p class="p1"><span class="Apple-converted-space">              </span>probability: 65,</p>
-<p class="p1"><span class="Apple-converted-space">              </span>natureTag: 'EXTERNAL',<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">              </span>conclusion: '受中東戰事影響，外資為了避險才賣股，不是台積電壞掉。這種「無辜受累」的急跌，通常是送分題。',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>reasons: [</p>
-<p class="p1"><span class="Apple-converted-space">                </span>'外資避險賣壓：因應中東地緣局勢升溫，外資單日提款 1.5 萬張。',</p>
-<p class="p1"><span class="Apple-converted-space">                </span>'費半連動：美股 SOX 指數重挫 4.2%，拖累半導體權值股。',</p>
-<p class="p1"><span class="Apple-converted-space">                </span>'錯殺性質：先進製程產能滿載，基本面未變，純屬資金面提款。'</p>
-<p class="p1"><span class="Apple-converted-space">              </span>],</p>
-<p class="p1"><span class="Apple-converted-space">              </span>recoveryDays: '15 ~ 20',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>volumeStatus: '量縮整理',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>potentialUpside: 13,<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">              </span>strategy: '建議觀望，待站回五日線後分批佈局。'</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">          </span>},</p>
-<p class="p1"><span class="Apple-converted-space">          </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>id: '2454',</p>
-<p class="p1"><span class="Apple-converted-space">            </span>name: '聯發科',</p>
-<p class="p1"><span class="Apple-converted-space">            </span>price: 1410,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>low: 1400,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>change: -3.5, <span class="Apple-converted-space">         </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>volume: 4250,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>avgVolume5dVal: 55, <span class="Apple-converted-space">   </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>priceAvg20d: 1460,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>priceAvg60d: 1480,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>bollingerLower: 1420, <span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>marketCapVal: 22700,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>rsi6: 25, <span class="Apple-converted-space">             </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>netBuy5d: 200,<span class="Apple-converted-space">         </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>institutionalHoldings: 65,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>eps4Q: 66.6,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>roe: 27.1,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isExDividend: false,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sector: 'IC設計',</p>
-<p class="p1"><span class="Apple-converted-space">            </span>panicLevel: 65,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>fairValue: 1650,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>resistancePrice: 1500,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>history: [</p>
-<p class="p1"><span class="Apple-converted-space">              </span>{ date: '01/06', price: 1480 }, { date: '01/07', price: 1460 }, { date: '01/08', price: 1450 },</p>
-<p class="p1"><span class="Apple-converted-space">              </span>{ date: '01/09', price: 1445 }, { date: '01/10', price: 1430 }, { date: '01/12', price: 1410 },</p>
-<p class="p1"><span class="Apple-converted-space">            </span>],</p>
-<p class="p1"><span class="Apple-converted-space">            </span>aiDiagnosis: {</p>
-<p class="p1"><span class="Apple-converted-space">              </span>probability: 85,</p>
-<p class="p1"><span class="Apple-converted-space">              </span>natureTag: 'SHORT_TERM',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>conclusion: '貨只是晚一個月出，訂單沒跑掉！趁市場誤以為利空而拋售時，跟著主力大戶悄悄佈局，勝率很高。',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>reasons: [</p>
-<p class="p1"><span class="Apple-converted-space">                </span>'營收遞延效應：5G 旗艦晶片出貨遞延至 2月，導致 1月營收月減 12%。',</p>
-<p class="p1"><span class="Apple-converted-space">                </span>'謠言澄清：市場傳聞陸系手機砍單，公司已發重訊嚴正否認。',</p>
-<p class="p1"><span class="Apple-converted-space">                </span>'籌碼異常：股價破底但主力券商（美林、摩根）逆勢買超 800 張。'</p>
-<p class="p1"><span class="Apple-converted-space">              </span>],</p>
-<p class="p1"><span class="Apple-converted-space">              </span>recoveryDays: '10 ~ 15',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>volumeStatus: '窒息量',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>potentialUpside: 17,<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">              </span>strategy: 'Strong Buy。建議分 3 日進場，首筆資金可於今日尾盤投入。'</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">          </span>},</p>
-<p class="p1"><span class="Apple-converted-space">          </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>id: '3037',</p>
-<p class="p1"><span class="Apple-converted-space">            </span>name: '欣興',</p>
-<p class="p1"><span class="Apple-converted-space">            </span>price: 175.0,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>low: 172.0,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>change: -4.5, <span class="Apple-converted-space">         </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>volume: 12000,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>avgVolume5dVal: 20, <span class="Apple-converted-space">   </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>priceAvg20d: 185.0,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>priceAvg60d: 195.0,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>bollingerLower: 178.0,<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>marketCapVal: 2700,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>rsi6: 18, <span class="Apple-converted-space">             </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>netBuy5d: -1500,<span class="Apple-converted-space">       </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>institutionalHoldings: 40,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>eps4Q: 8.5,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>roe: 15.2,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isExDividend: false,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sector: 'PCB',</p>
-<p class="p1"><span class="Apple-converted-space">            </span>panicLevel: 85,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>fairValue: 220,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>resistancePrice: 190,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>history: [</p>
-<p class="p1"><span class="Apple-converted-space">              </span>{ date: '01/06', price: 195 }, { date: '01/07', price: 190 }, { date: '01/08', price: 188 },</p>
-<p class="p1"><span class="Apple-converted-space">              </span>{ date: '01/09', price: 185 }, { date: '01/10', price: 182 }, { date: '01/12', price: 175 },</p>
-<p class="p1"><span class="Apple-converted-space">            </span>],</p>
-<p class="p1"><span class="Apple-converted-space">            </span>aiDiagnosis: {</p>
-<p class="p1"><span class="Apple-converted-space">              </span>probability: 70,</p>
-<p class="p1"><span class="Apple-converted-space">              </span>natureTag: 'EXTERNAL',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>conclusion: '日本對手財報不好看，嚇得散戶恐慌殺出（多殺多）。現在還在「大逃殺」階段，先在旁邊看戲，等沒人賣了再進場。',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>reasons: [</p>
-<p class="p1"><span class="Apple-converted-space">                </span>'報價鬆動疑慮：日商 Ibiden 財報示警 ABF 需求放緩，引發族群修正。',</p>
-<p class="p1"><span class="Apple-converted-space">                </span>'融資斷頭：融資維持率跌破 140% 警戒線，觸發散戶多殺多。',</p>
-<p class="p1"><span class="Apple-converted-space">                </span>'投信停損：投信季底結帳賣壓湧現，連續 5 日賣超合計 6,200 張。'</p>
-<p class="p1"><span class="Apple-converted-space">              </span>],</p>
-<p class="p1"><span class="Apple-converted-space">              </span>recoveryDays: '20 ~ 25',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>volumeStatus: '爆量下殺',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>potentialUpside: 25,</p>
-<p class="p1"><span class="Apple-converted-space">              </span>strategy: '急跌不接刀。待成交量縮至 5000 張以下再行介入。'</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">          </span>},</p>
-<p class="p1"><span class="Apple-converted-space">          </span>{</p>
-<p class="p1"><span class="Apple-converted-space">            </span>id: '8298',</p>
-<p class="p1"><span class="Apple-converted-space">            </span>name: '地雷KY',</p>
-<p class="p1"><span class="Apple-converted-space">            </span>price: 32.0,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>change: -9.8,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>volume: 500,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>avgVolume5dVal: 0.08,<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>priceAvg20d: 40,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>priceAvg60d: 45,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>bollingerLower: 30,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>marketCapVal: 50,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>rsi6: 10,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>netBuy5d: -50,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>institutionalHoldings: 2,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>eps4Q: -2.5, <span class="Apple-converted-space">         </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>roe: -10,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>isExDividend: false,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sector: '生技',</p>
-<p class="p1"><span class="Apple-converted-space">            </span>panicLevel: 95,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>fairValue: 20,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>resistancePrice: 35,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>history: Array(6).fill({date: '01/12', price: 32}),</p>
-<p class="p1"><span class="Apple-converted-space">            </span>aiDiagnosis: {</p>
-<p class="p1"><span class="Apple-converted-space">              </span>probability: 10,</p>
-<p class="p1"><span class="Apple-converted-space">              </span>natureTag: 'STRUCTURAL',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>conclusion: '帳目不清、會計師這關過不了，這是公司「心臟病發」。這種跌停是真出事，千萬別以為便宜就去接，會接滿手血。',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>reasons: [</p>
-<p class="p1"><span class="Apple-converted-space">                </span>'會計師保留意見：無法釐清海外子公司 5 億元帳款流向，財報卡關。',</p>
-<p class="p1"><span class="Apple-converted-space">                </span>'大股東拋售：董事長配偶申報轉讓持股 2,000 張，引發掏空疑慮。',</p>
-<p class="p1"><span class="Apple-converted-space">                </span>'核心業務流失：主要歐美客戶終止合約，營收面臨腰斬風險。'</p>
-<p class="p1"><span class="Apple-converted-space">              </span>],</p>
-<p class="p1"><span class="Apple-converted-space">              </span>recoveryDays: 'N/A',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>volumeStatus: '無量跌停',</p>
-<p class="p1"><span class="Apple-converted-space">              </span>potentialUpside: 0,</p>
-<p class="p1"><span class="Apple-converted-space">              </span>strategy: '賣出。不搶反彈。'</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">          </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// --- Logic Core ---</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function analyzeStock(stock) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const analysis = {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>checks: [],</p>
-<p class="p1"><span class="Apple-converted-space">            </span>triggerTypes: [],<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>isPassed: false,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>failReason: null,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>opportunityScore: 0,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>deviation: 0,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>betaCheck: true,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>const isLiquid = stock.avgVolume5dVal &gt;= 0.1;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const isProfitable = stock.eps4Q &gt; 0;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const isCleanEvent = !stock.isExDividend;</p>
-<p class="p2"><span class="Apple-converted-space">          </span></p>
-<p class="p1"><span class="Apple-converted-space">          </span>const passSurvival = isLiquid &amp;&amp; isProfitable &amp;&amp; isCleanEvent;</p>
-<p class="p2"><span class="Apple-converted-space">          </span></p>
-<p class="p1"><span class="Apple-converted-space">          </span>analysis.checks.push({ name: '流動性 &gt; 1000萬', pass: isLiquid, value: `${(stock.avgVolume5dVal * 100).toFixed(0)}00萬` });</p>
-<p class="p1"><span class="Apple-converted-space">          </span>analysis.checks.push({ name: '獲利安全 (EPS &gt; 0)', pass: isProfitable, value: stock.eps4Q });</p>
-<p class="p2"><span class="Apple-converted-space">          </span></p>
-<p class="p1"><span class="Apple-converted-space">          </span>if (!passSurvival) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>analysis.failReason = !isLiquid ? "流動性不足" : (!isProfitable ? "虧損公司" : "除權息雜訊");</p>
-<p class="p1"><span class="Apple-converted-space">            </span>return analysis;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>const isRsiOversold = stock.rsi6 &lt; 20;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const isBollingerBreak = stock.price &lt; stock.bollingerLower;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>if (isRsiOversold) analysis.triggerTypes.push('RSI_OVERSOLD');</p>
-<p class="p1"><span class="Apple-converted-space">          </span>if (isBollingerBreak) analysis.triggerTypes.push('BB_BREAK');</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>if (analysis.triggerTypes.length === 0) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>analysis.failReason = "未達超賣觸發條件";</p>
-<p class="p1"><span class="Apple-converted-space">          </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>let passBeta = true;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>if (MARKET_DROP_TODAY &lt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">             </span>const threshold = MARKET_DROP_TODAY * 1.5;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">             </span>if (stock.change &gt; threshold) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>passBeta = false;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>analysis.failReason = `Beta校正失敗 (跌幅未達大盤1.5倍)`;</p>
-<p class="p1"><span class="Apple-converted-space">             </span>}</p>
-<p class="p1"><span class="Apple-converted-space">          </span>}</p>
-<p class="p1"><span class="Apple-converted-space">          </span>analysis.betaCheck = passBeta;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>analysis.isPassed = passSurvival &amp;&amp; analysis.triggerTypes.length &gt; 0 &amp;&amp; passBeta;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>if (analysis.isPassed) {</p>
-<p class="p1"><span class="Apple-converted-space">              </span>const probScore = stock.aiDiagnosis.probability;</p>
-<p class="p2"><span class="Apple-converted-space">              </span></p>
-<p class="p1"><span class="Apple-converted-space">              </span>analysis.deviation = ((stock.price - stock.priceAvg60d) / stock.priceAvg60d) * 100;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>const deviationScore = Math.min(Math.abs(analysis.deviation) * 3.5, 100);</p>
-<p class="p2"><span class="Apple-converted-space">              </span></p>
-<p class="p1"><span class="Apple-converted-space">              </span>let chipScore = 0;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>if (stock.netBuy5d &gt; 0) chipScore = 100;<span class="Apple-converted-space">       </span></p>
-<p class="p1"><span class="Apple-converted-space">              </span>else if (stock.institutionalHoldings &gt; 50) chipScore = 50;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">              </span>else chipScore = 0;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">              </span>analysis.opportunityScore = Math.round(</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>(probScore * 0.5) + (deviationScore * 0.3) + (chipScore * 0.2)</p>
-<p class="p1"><span class="Apple-converted-space">              </span>);</p>
-<p class="p1"><span class="Apple-converted-space">          </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>return analysis;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// --- Components ---</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function NatureBadge({ tag }) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>switch(tag) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>case 'SHORT_TERM':<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">              </span>return &lt;span className="px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold text-xs border border-green-200 flex items-center gap-1"&gt;🟢 短期意外&lt;/span&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>case 'EXTERNAL':<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">              </span>return &lt;span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full font-bold text-xs border border-yellow-200 flex items-center gap-1"&gt;🟡 外部環境&lt;/span&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>case 'STRUCTURAL':<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">              </span>return &lt;span className="px-3 py-1 bg-red-100 text-red-800 rounded-full font-bold text-xs border border-red-200 flex items-center gap-1"&gt;🔴 結構損壞&lt;/span&gt;;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>default: return null;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function StockCard({ stock, analysis, onClick }) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const isPassed = analysis.isPassed;</p>
-<p class="p2"><span class="Apple-converted-space">          </span></p>
-<p class="p1"><span class="Apple-converted-space">          </span>return (</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">              </span>onClick={() =&gt; onClick(stock)}</p>
-<p class="p1"><span class="Apple-converted-space">              </span>className={`relative bg-white p-4 rounded-xl shadow-sm border transition-all cursor-pointer hover:shadow-md group ${!isPassed ? 'opacity-60 grayscale-[0.5] border-slate-200' : 'border-slate-100 hover:border-indigo-200'}`}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>{!isPassed &amp;&amp; (</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="absolute top-2 right-2 px-2 py-0.5 bg-slate-100 text-slate-500 text-xs font-bold rounded flex items-center gap-1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;XCircle size={12} /&gt; {analysis.failReason || "未入選"}</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>)}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="flex justify-between items-start mb-2"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="flex items-center gap-3"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className={`w-12 h-12 rounded-lg flex items-center justify-center font-bold text-white text-sm ${isPassed ? 'bg-indigo-600' : 'bg-slate-400'}`}&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{stock.id}</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 className="font-bold text-slate-800 text-lg leading-tight group-hover:text-indigo-600 transition-colors"&gt;{stock.name}&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{isPassed &amp;&amp; (</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;div className="mt-1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                         </span>&lt;NatureBadge tag={stock.aiDiagnosis.natureTag} /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>)}</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="text-right"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="font-mono text-xl font-bold text-slate-900"&gt;{stock.price}&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className={`font-mono text-sm font-bold ${stock.change &lt; 0 ? 'text-green-600' : 'text-red-600'}`}&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{stock.change}%</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">              </span>{/* Conclusion Comment */}</p>
-<p class="p1"><span class="Apple-converted-space">              </span>{isPassed &amp;&amp; (</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="mt-2 mb-3 p-2 bg-slate-50 rounded-lg border border-slate-100"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                   </span>&lt;div className="flex items-start gap-2"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>&lt;Lightbulb size={14} className="text-indigo-500 mt-0.5 shrink-0" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>&lt;span className="text-sm text-slate-700 font-medium leading-tight"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>{stock.aiDiagnosis.conclusion}</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                   </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>)}</p>
-<p class="p2"><span class="Apple-converted-space">              </span></p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="flex items-center justify-between pt-2 border-t border-slate-50 mt-2"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{isPassed ? (</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                     </span>&lt;div className="flex items-center gap-1.5"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;span className="text-xs text-slate-400"&gt;預估修復&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;span className="font-bold text-slate-700"&gt;{stock.aiDiagnosis.recoveryDays}天&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                     </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                     </span>&lt;div className="flex items-center gap-1.5"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;span className="text-xs text-slate-400"&gt;潛在空間&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;span className="font-bold text-green-600"&gt;+{stock.aiDiagnosis.potentialUpside}%&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                     </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                     </span>&lt;div className="flex items-center gap-1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;Gauge size={14} className={analysis.opportunityScore &gt;= 80 ? 'text-red-600' : 'text-orange-500'} /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span className={`font-bold font-mono text-base ${analysis.opportunityScore &gt;= 80 ? 'text-red-600' : 'text-orange-500'}`}&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>{analysis.opportunityScore}</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                     </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>) : (</p>
-<p class="p1"><span class="Apple-converted-space">                   </span>&lt;div className="text-xs text-slate-400 pt-1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>等待觸發信號...</p>
-<p class="p1"><span class="Apple-converted-space">                   </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>)}</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function DetailView({ stock, analysis, onBack }) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const { aiDiagnosis } = stock;</p>
-<p class="p2"><span class="Apple-converted-space">          </span></p>
-<p class="p1"><span class="Apple-converted-space">          </span>const calculateResistancePercent = () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const totalRange = stock.fairValue - stock.price;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const resistanceOffset = stock.resistancePrice - stock.price;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (totalRange &lt;= 0) return 0;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>let percent = (resistanceOffset / totalRange) * 100;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>return Math.max(10, Math.min(90, percent));</p>
-<p class="p1"><span class="Apple-converted-space">          </span>};</p>
-<p class="p2"><span class="Apple-converted-space">          </span></p>
-<p class="p1"><span class="Apple-converted-space">          </span>const resistancePercent = calculateResistancePercent();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>return (</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="animate-in slide-in-from-right duration-300 pb-20"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="flex items-center gap-2 mb-6 text-slate-500 cursor-pointer hover:text-slate-800" onClick={onBack}&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;ArrowLeft size={20} /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;span&gt;返回清單&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="flex justify-between items-start mb-6"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;h1 className="text-3xl font-bold text-slate-900 flex items-center gap-2"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{stock.name} &lt;span className="text-xl text-slate-400 font-medium"&gt;{stock.id}&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;p className="text-slate-500 text-sm mt-1"&gt;{stock.sector} | 市值 {stock.marketCapVal} 億&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="text-right"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="text-4xl font-bold font-mono tracking-tighter"&gt;{stock.price}&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="text-green-600 font-bold font-mono text-xl"&gt;{stock.change}% ▼&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                 </span>&lt;div className="bg-slate-50 p-4 border-b border-slate-100 flex justify-between items-center"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="flex items-center gap-3"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;NatureBadge tag={aiDiagnosis.natureTag} /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;h2 className="font-bold text-slate-800"&gt;{aiDiagnosis.conclusion}&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="text-xs text-slate-400 font-mono"&gt;AI Model v4.0&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                 </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                 </span>&lt;div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="space-y-4"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;Microscope size={16} /&gt; 核心原因診斷</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;ul className="space-y-2"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>{aiDiagnosis.reasons.map((r, i) =&gt; (</p>
-<p class="p1"><span class="Apple-converted-space">                             </span>&lt;li key={i} className="flex gap-2 text-sm text-slate-700"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span className="text-indigo-500 font-bold"&gt;•&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>{r}</p>
-<p class="p1"><span class="Apple-converted-space">                             </span>&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>))}</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;/ul&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="space-y-4"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;Calendar size={16} /&gt; 修復時間預估</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;div className="bg-slate-50 p-3 rounded-lg border border-slate-100 text-center"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;div className="text-2xl font-bold text-slate-800"&gt;{aiDiagnosis.recoveryDays} &lt;span className="text-sm font-normal text-slate-500"&gt;交易日&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="space-y-4 relative group/tooltip-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;Target size={16} /&gt; 潛在獲利空間</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;div className="mb-4"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                             </span>&lt;span className="text-4xl font-black text-green-600 tracking-tighter"&gt;+{aiDiagnosis.potentialUpside}%&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                             </span>&lt;span className="text-xs text-slate-400 ml-2 font-medium uppercase tracking-wide"&gt;Upside Potential&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                          </span></p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;div className="relative pt-6 pb-2"&gt;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                             </span>&lt;div className="w-full h-3 bg-slate-100 rounded-full relative overflow-hidden"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div className="absolute left-0 top-0 h-full w-full bg-gradient-to-r from-green-400 to-green-600 opacity-30"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                             </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                             </span>&lt;div className="absolute left-0 top-4 pt-3 flex flex-col items-start"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div className="h-3 w-0.5 bg-slate-400 mb-1 mx-1"&gt;&lt;/div&gt;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span className="text-[10px] text-slate-400 font-bold uppercase"&gt;現價&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span className="text-xs font-bold text-slate-800"&gt;${stock.price}&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                             </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                             </span>&lt;div className="absolute right-0 top-4 pt-3 flex flex-col items-end"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div className="h-3 w-0.5 bg-green-500 mb-1 mx-1"&gt;&lt;/div&gt;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span className="text-[10px] text-green-600 font-bold uppercase"&gt;目標價&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span className="text-xs font-bold text-slate-800"&gt;${stock.fairValue}&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                             </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                             </span>&lt;div<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                                </span>className="absolute top-0 h-full flex flex-col items-center group/marker z-10"</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>style={{ left: `${resistancePercent}%`, transform: 'translateX(-50%)' }}</p>
-<p class="p1"><span class="Apple-converted-space">                             </span>&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div className="mb-1 flex items-center gap-1 cursor-help relative"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100 whitespace-nowrap"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                        </span>壓力位 ${stock.resistancePrice}</p>
-<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;HelpCircle size={12} className="text-red-400 hover:text-red-600 transition-colors" /&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                                    </span>{/* Tooltip Content */}</p>
-<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;div className="tooltip-content opacity-0 absolute bottom-full mb-2 w-64 p-3 bg-slate-800 text-white text-xs rounded-lg shadow-xl pointer-events-none z-50 text-left"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;div className="flex items-center gap-1 font-bold text-yellow-400 mb-1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                            </span>&lt;AlertTriangle size={12} /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                            </span>減速帶警示</p>
-<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;p className="leading-relaxed text-slate-200"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                            </span>壓力位就像是漲勢的「減速帶」，股價到了這裡容易撞到天花板而回檔。如果你追求穩健、不想冒風險，建議在接近壓力位時先賣出下車，確保獲利入袋為安。</p>
-<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-800"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div className="w-0.5 h-full bg-red-400 dashed relative"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full border-2 border-white shadow-sm"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                             </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                 </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                 </span>&lt;div className="bg-indigo-50/50 p-4 border-t border-slate-100 flex items-start gap-3"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;Lightbulb size={20} className="text-indigo-500 mt-0.5" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;div className="font-bold text-indigo-900 text-sm mb-0.5"&gt;操作策略建議&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;p className="text-sm text-indigo-800"&gt;{aiDiagnosis.strategy}&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                 </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                 </span>&lt;div className="flex flex-col gap-2 mb-4"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="flex justify-between items-center"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h3 className="font-bold text-slate-800 flex items-center gap-2"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;Activity size={18} /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>股價與定錨點 (月線/季線)</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="text-xs text-slate-400 mt-1 px-1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p&gt;當藍色實線（現價）遠低於虛線時，中間的空隙即為潛在的反彈空間。&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                 </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                 </span>&lt;div className="h-64 w-full"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                   </span>&lt;ResponsiveContainer width="100%" height="100%"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                     </span>&lt;AreaChart data={stock.history}&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;defs&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                         </span>&lt;linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                           </span>&lt;stop offset="5%" stopColor="#4f46e5" stopOpacity={0.1}/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                           </span>&lt;stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                         </span>&lt;/linearGradient&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;/defs&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8'}} /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;YAxis domain={['auto', 'auto']} axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8'}} /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;Tooltip /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;ReferenceLine y={stock.priceAvg20d} label={{ value: "月線 (20MA)", fill: '#3b82f6', fontSize: 11, position: 'insideTopRight' }} stroke="#3b82f6" strokeDasharray="3 3" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;ReferenceLine y={stock.priceAvg60d} label={{ value: "季線 (60MA)", fill: '#ef4444', fontSize: 11, position: 'insideTopRight' }} stroke="#ef4444" strokeDasharray="3 3" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;Area type="monotone" dataKey="price" stroke="#4f46e5" fillOpacity={1} fill="url(#colorPrice)" strokeWidth={2} /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                     </span>&lt;/AreaChart&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                   </span>&lt;/ResponsiveContainer&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                 </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">              </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function App() {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const [stocks, setStocks] = useState(INITIAL_STOCKS);</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const [selectedStock, setSelectedStock] = useState(null);</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const [strictMode, setStrictMode] = useState(true);</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const [searchQuery, setSearchQuery] = useState('');</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>const processedStocks = useMemo(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>return stocks.map(stock =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">              </span>const analysis = analyzeStock(stock);</p>
-<p class="p1"><span class="Apple-converted-space">              </span>return { ...stock, analysis };</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}).sort((a, b) =&gt; b.analysis.opportunityScore - a.analysis.opportunityScore);<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">          </span>}, [stocks]);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>const filteredStocks = processedStocks.filter(stock =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const matchesSearch = stock.name.includes(searchQuery) || stock.id.includes(searchQuery);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (strictMode) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>return matchesSearch &amp;&amp; stock.analysis.isPassed;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>return matchesSearch &amp;&amp; stock.analysis.triggerTypes.length &gt; 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">          </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>return (</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-20"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">              </span></p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;nav className="bg-white border-b border-slate-200 sticky top-0 z-10 px-4 py-3 shadow-sm"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="max-w-5xl mx-auto flex justify-between items-center"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="flex items-center gap-2"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                     </span>&lt;div className="bg-rose-500 text-white p-2 rounded-lg shadow-lg shadow-rose-200"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;Activity size={20} strokeWidth={3} /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                     </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                     </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;span className="font-bold text-xl tracking-tight block leading-none"&gt;Rebounder&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                       </span>&lt;span className="text-xs text-slate-400 font-mono"&gt;v4.0 AI Diagnosis&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                     </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;/nav&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;main className="max-w-5xl mx-auto px-4 py-6"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>{selectedStock ? (</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;DetailView stock={selectedStock} analysis={selectedStock.analysis} onBack={() =&gt; setSelectedStock(null)} /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>) : (</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="animate-in fade-in duration-300"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="mb-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>&lt;h1 className="text-2xl font-bold text-slate-900 mb-2"&gt;逆轉股票&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="flex flex-wrap items-center gap-2 text-sm text-slate-500"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                         </span>&lt;span className="bg-white inline-flex items-center gap-1 px-3 py-1 rounded-full border border-slate-200 shadow-sm"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;Activity size={14} className="text-orange-500" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span&gt;大盤 Beta 校正閥值: {(MARKET_DROP_TODAY * 1.5).toFixed(2)}%&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                         </span>&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                         </span>&lt;span className="bg-indigo-50 text-indigo-700 inline-flex items-center gap-1 px-3 py-1 rounded-full border border-indigo-100 shadow-sm font-medium"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>核心層：流動性 + 獲利安全</p>
-<p class="p1"><span class="Apple-converted-space">                         </span>&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="relative w-full md:w-64"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;input<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                          </span>type="text"<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                          </span>placeholder="搜尋代號或名稱..."<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                          </span>className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>value={searchQuery}</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>onChange={(e) =&gt; setSearchQuery(e.target.value)}</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="flex gap-4 w-full md:w-auto"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;button<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                          </span>onClick={() =&gt; setStrictMode(!strictMode)}</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all whitespace-nowrap w-full md:w-auto justify-center ${</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>strictMode<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                              </span>? 'bg-slate-900 border-slate-900 text-white shadow-md'<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                              </span>: 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>}`}</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;ShieldCheck size={18} /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;span&gt;核心過濾 (Survival): {strictMode ? '已開啟' : '顯示全部'}&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="space-y-4"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="flex justify-between items-center px-2"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>AI 診斷候選 ({filteredStocks.length})</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div className="flex items-center gap-2 text-xs text-slate-400"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                           </span>&lt;span&gt;排序：機會指數 Score&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                      </span>{filteredStocks.length &gt; 0 ? (</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>filteredStocks.map(stock =&gt; (</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;StockCard<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                            </span>key={stock.id}<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                            </span>stock={stock}<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                            </span>analysis={stock.analysis}</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>onClick={setSelectedStock}<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                          </span>/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>))</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>) : (</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div className="text-center py-20 bg-white rounded-xl border border-dashed border-slate-300"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;div className="bg-slate-50 p-4 rounded-full inline-block mb-3"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;CheckCircle size={32} className="text-green-500" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;p className="text-slate-900 font-bold text-lg"&gt;目前市場無超跌標的&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                          </span>&lt;p className="text-slate-500 mt-1"&gt;未偵測到符合 RSI &amp;lt; 20 或 破布林下軌 之高流動性獲利股。&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>)}</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>)}</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;/main&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>const root = ReactDOM.createRoot(document.getElementById('root'));</p>
-<p class="p1"><span class="Apple-converted-space">        </span>root.render(&lt;App /&gt;);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+<body class="bg-slate-50 text-slate-900">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+        const { 
+            LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, AreaChart, Area 
+        } = Recharts;
+
+        // --- Icons (Inline SVGs) ---
+        const IconBase = ({ children, size = 24, className = "", ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>{children}</svg>
+        );
+        const Search = (props) => <IconBase {...props}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></IconBase>;
+        const ShieldCheck = (props) => <IconBase {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></IconBase>;
+        const ArrowLeft = (props) => <IconBase {...props}><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></IconBase>;
+        const Activity = (props) => <IconBase {...props}><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></IconBase>;
+        const Microscope = (props) => <IconBase {...props}><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></IconBase>;
+        const CheckCircle = (props) => <IconBase {...props}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></IconBase>;
+        const XCircle = (props) => <IconBase {...props}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></IconBase>;
+        const Gauge = (props) => <IconBase {...props}><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></IconBase>;
+        const Calendar = (props) => <IconBase {...props}><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></IconBase>;
+        const Target = (props) => <IconBase {...props}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></IconBase>;
+        const AlertTriangle = (props) => <IconBase {...props}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></IconBase>;
+        const Lightbulb = (props) => <IconBase {...props}><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-1 1.5-2.4 1.5-3.8 0-3.2-2.6-5.8-5.8-5.8-3.2 0-5.8 2.6-5.8 5.8 0 1.4.5 2.8 1.5 3.8.8.8 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></IconBase>;
+        const HelpCircle = (props) => <IconBase {...props}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></IconBase>;
+
+        // --- Data ---
+
+        const MARKET_DROP_TODAY = -1.5; 
+        const MARKET_INDEX = 30288;       
+
+        const INITIAL_STOCKS = [
+          {
+            id: '2330',
+            name: '台積電',
+            price: 1680,            
+            low: 1675,
+            change: -2.0,          
+            volume: 31237,         
+            avgVolume5dVal: 480,   
+            priceAvg20d: 1700,     
+            priceAvg60d: 1720,     
+            bollingerLower: 1650,  
+            marketCapVal: 435700,
+            rsi6: 35,              
+            netBuy5d: -5000,       
+            institutionalHoldings: 78,
+            eps4Q: 61.2,           
+            roe: 28.5,
+            isExDividend: false,
+            sector: '半導體',
+            panicLevel: 35,
+            fairValue: 1900,       
+            resistancePrice: 1750, 
+            history: [
+              { date: '01/06', price: 1705 }, { date: '01/07', price: 1695 }, { date: '01/08', price: 1700 },
+              { date: '01/09', price: 1680 }, { date: '01/10', price: 1685 }, { date: '01/12', price: 1680 },
+            ],
+            aiDiagnosis: {
+              probability: 65,
+              natureTag: 'EXTERNAL', 
+              conclusion: '受中東戰事影響，外資為了避險才賣股，不是台積電壞掉。這種「無辜受累」的急跌，通常是送分題。',
+              reasons: [
+                '外資避險賣壓：因應中東地緣局勢升溫，外資單日提款 1.5 萬張。',
+                '費半連動：美股 SOX 指數重挫 4.2%，拖累半導體權值股。',
+                '錯殺性質：先進製程產能滿載，基本面未變，純屬資金面提款。'
+              ],
+              recoveryDays: '15 ~ 20',
+              volumeStatus: '量縮整理',
+              potentialUpside: 13, 
+              strategy: '建議觀望，待站回五日線後分批佈局。'
+            }
+          },
+          {
+            id: '2454',
+            name: '聯發科',
+            price: 1410,
+            low: 1400,
+            change: -3.5,          
+            volume: 4250,
+            avgVolume5dVal: 55,    
+            priceAvg20d: 1460,
+            priceAvg60d: 1480,
+            bollingerLower: 1420,  
+            marketCapVal: 22700,
+            rsi6: 25,              
+            netBuy5d: 200,         
+            institutionalHoldings: 65,
+            eps4Q: 66.6,
+            roe: 27.1,
+            isExDividend: false,
+            sector: 'IC設計',
+            panicLevel: 65,
+            fairValue: 1650,
+            resistancePrice: 1500,
+            history: [
+              { date: '01/06', price: 1480 }, { date: '01/07', price: 1460 }, { date: '01/08', price: 1450 },
+              { date: '01/09', price: 1445 }, { date: '01/10', price: 1430 }, { date: '01/12', price: 1410 },
+            ],
+            aiDiagnosis: {
+              probability: 85,
+              natureTag: 'SHORT_TERM',
+              conclusion: '貨只是晚一個月出，訂單沒跑掉！趁市場誤以為利空而拋售時，跟著主力大戶悄悄佈局，勝率很高。',
+              reasons: [
+                '營收遞延效應：5G 旗艦晶片出貨遞延至 2月，導致 1月營收月減 12%。',
+                '謠言澄清：市場傳聞陸系手機砍單，公司已發重訊嚴正否認。',
+                '籌碼異常：股價破底但主力券商（美林、摩根）逆勢買超 800 張。'
+              ],
+              recoveryDays: '10 ~ 15',
+              volumeStatus: '窒息量',
+              potentialUpside: 17, 
+              strategy: 'Strong Buy。建議分 3 日進場，首筆資金可於今日尾盤投入。'
+            }
+          },
+          {
+            id: '3037',
+            name: '欣興',
+            price: 175.0,
+            low: 172.0,
+            change: -4.5,          
+            volume: 12000,
+            avgVolume5dVal: 20,    
+            priceAvg20d: 185.0,
+            priceAvg60d: 195.0,
+            bollingerLower: 178.0, 
+            marketCapVal: 2700,
+            rsi6: 18,              
+            netBuy5d: -1500,       
+            institutionalHoldings: 40,
+            eps4Q: 8.5,
+            roe: 15.2,
+            isExDividend: false,
+            sector: 'PCB',
+            panicLevel: 85,
+            fairValue: 220,
+            resistancePrice: 190,
+            history: [
+              { date: '01/06', price: 195 }, { date: '01/07', price: 190 }, { date: '01/08', price: 188 },
+              { date: '01/09', price: 185 }, { date: '01/10', price: 182 }, { date: '01/12', price: 175 },
+            ],
+            aiDiagnosis: {
+              probability: 70,
+              natureTag: 'EXTERNAL',
+              conclusion: '日本對手財報不好看，嚇得散戶恐慌殺出（多殺多）。現在還在「大逃殺」階段，先在旁邊看戲，等沒人賣了再進場。',
+              reasons: [
+                '報價鬆動疑慮：日商 Ibiden 財報示警 ABF 需求放緩，引發族群修正。',
+                '融資斷頭：融資維持率跌破 140% 警戒線，觸發散戶多殺多。',
+                '投信停損：投信季底結帳賣壓湧現，連續 5 日賣超合計 6,200 張。'
+              ],
+              recoveryDays: '20 ~ 25',
+              volumeStatus: '爆量下殺',
+              potentialUpside: 25,
+              strategy: '急跌不接刀。待成交量縮至 5000 張以下再行介入。'
+            }
+          },
+          {
+            id: '8298',
+            name: '地雷KY',
+            price: 32.0,
+            change: -9.8,
+            volume: 500,
+            avgVolume5dVal: 0.08, 
+            priceAvg20d: 40,
+            priceAvg60d: 45,
+            bollingerLower: 30,
+            marketCapVal: 50,
+            rsi6: 10,
+            netBuy5d: -50,
+            institutionalHoldings: 2,
+            eps4Q: -2.5,          
+            roe: -10,
+            isExDividend: false,
+            sector: '生技',
+            panicLevel: 95,
+            fairValue: 20,
+            resistancePrice: 35,
+            history: Array(6).fill({date: '01/12', price: 32}),
+            aiDiagnosis: {
+              probability: 10,
+              natureTag: 'STRUCTURAL',
+              conclusion: '帳目不清、會計師這關過不了，這是公司「心臟病發」。這種跌停是真出事，千萬別以為便宜就去接，會接滿手血。',
+              reasons: [
+                '會計師保留意見：無法釐清海外子公司 5 億元帳款流向，財報卡關。',
+                '大股東拋售：董事長配偶申報轉讓持股 2,000 張，引發掏空疑慮。',
+                '核心業務流失：主要歐美客戶終止合約，營收面臨腰斬風險。'
+              ],
+              recoveryDays: 'N/A',
+              volumeStatus: '無量跌停',
+              potentialUpside: 0,
+              strategy: '賣出。不搶反彈。'
+            }
+          }
+        ];
+
+        // --- Logic Core ---
+
+        function analyzeStock(stock) {
+          const analysis = {
+            checks: [],
+            triggerTypes: [], 
+            isPassed: false,
+            failReason: null,
+            opportunityScore: 0,
+            deviation: 0,
+            betaCheck: true,
+          };
+
+          const isLiquid = stock.avgVolume5dVal >= 0.1;
+          const isProfitable = stock.eps4Q > 0;
+          const isCleanEvent = !stock.isExDividend;
+          
+          const passSurvival = isLiquid && isProfitable && isCleanEvent;
+          
+          analysis.checks.push({ name: '流動性 > 1000萬', pass: isLiquid, value: `${(stock.avgVolume5dVal * 100).toFixed(0)}00萬` });
+          analysis.checks.push({ name: '獲利安全 (EPS > 0)', pass: isProfitable, value: stock.eps4Q });
+          
+          if (!passSurvival) {
+            analysis.failReason = !isLiquid ? "流動性不足" : (!isProfitable ? "虧損公司" : "除權息雜訊");
+            return analysis;
+          }
+
+          const isRsiOversold = stock.rsi6 < 20;
+          const isBollingerBreak = stock.price < stock.bollingerLower;
+
+          if (isRsiOversold) analysis.triggerTypes.push('RSI_OVERSOLD');
+          if (isBollingerBreak) analysis.triggerTypes.push('BB_BREAK');
+
+          if (analysis.triggerTypes.length === 0) {
+            analysis.failReason = "未達超賣觸發條件";
+          }
+
+          let passBeta = true;
+          if (MARKET_DROP_TODAY < 0) {
+             const threshold = MARKET_DROP_TODAY * 1.5; 
+             if (stock.change > threshold) {
+                passBeta = false;
+                analysis.failReason = `Beta校正失敗 (跌幅未達大盤1.5倍)`;
+             }
+          }
+          analysis.betaCheck = passBeta;
+
+          analysis.isPassed = passSurvival && analysis.triggerTypes.length > 0 && passBeta;
+
+          if (analysis.isPassed) {
+              const probScore = stock.aiDiagnosis.probability;
+              
+              analysis.deviation = ((stock.price - stock.priceAvg60d) / stock.priceAvg60d) * 100;
+              const deviationScore = Math.min(Math.abs(analysis.deviation) * 3.5, 100);
+              
+              let chipScore = 0;
+              if (stock.netBuy5d > 0) chipScore = 100;       
+              else if (stock.institutionalHoldings > 50) chipScore = 50; 
+              else chipScore = 0;
+
+              analysis.opportunityScore = Math.round(
+                  (probScore * 0.5) + (deviationScore * 0.3) + (chipScore * 0.2)
+              );
+          }
+
+          return analysis;
+        }
+
+        // --- Components ---
+
+        function NatureBadge({ tag }) {
+          switch(tag) {
+            case 'SHORT_TERM': 
+              return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold text-xs border border-green-200 flex items-center gap-1">🟢 短期意外</span>;
+            case 'EXTERNAL': 
+              return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full font-bold text-xs border border-yellow-200 flex items-center gap-1">🟡 外部環境</span>;
+            case 'STRUCTURAL': 
+              return <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full font-bold text-xs border border-red-200 flex items-center gap-1">🔴 結構損壞</span>;
+            default: return null;
+          }
+        }
+
+        function StockCard({ stock, analysis, onClick }) {
+          const isPassed = analysis.isPassed;
+          
+          return (
+            <div 
+              onClick={() => onClick(stock)}
+              className={`relative bg-white p-4 rounded-xl shadow-sm border transition-all cursor-pointer hover:shadow-md group ${!isPassed ? 'opacity-60 grayscale-[0.5] border-slate-200' : 'border-slate-100 hover:border-indigo-200'}`}
+            >
+              {!isPassed && (
+                <div className="absolute top-2 right-2 px-2 py-0.5 bg-slate-100 text-slate-500 text-xs font-bold rounded flex items-center gap-1">
+                  <XCircle size={12} /> {analysis.failReason || "未入選"}
+                </div>
+              )}
+
+              <div className="flex justify-between items-start mb-2">
+                <div className="flex items-center gap-3">
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center font-bold text-white text-sm ${isPassed ? 'bg-indigo-600' : 'bg-slate-400'}`}>
+                    {stock.id}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-800 text-lg leading-tight group-hover:text-indigo-600 transition-colors">{stock.name}</h3>
+                    {isPassed && (
+                       <div className="mt-1">
+                         <NatureBadge tag={stock.aiDiagnosis.natureTag} />
+                       </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="text-right">
+                  <div className="font-mono text-xl font-bold text-slate-900">{stock.price}</div>
+                  <div className={`font-mono text-sm font-bold ${stock.change < 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {stock.change}%
+                  </div>
+                </div>
+              </div>
+
+              {/* Conclusion Comment */}
+              {isPassed && (
+                <div className="mt-2 mb-3 p-2 bg-slate-50 rounded-lg border border-slate-100">
+                   <div className="flex items-start gap-2">
+                      <Lightbulb size={14} className="text-indigo-500 mt-0.5 shrink-0" />
+                      <span className="text-sm text-slate-700 font-medium leading-tight">
+                        {stock.aiDiagnosis.conclusion}
+                      </span>
+                   </div>
+                </div>
+              )}
+              
+              <div className="flex items-center justify-between pt-2 border-t border-slate-50 mt-2">
+                {isPassed ? (
+                  <>
+                     <div className="flex items-center gap-1.5">
+                       <span className="text-xs text-slate-400">預估修復</span>
+                       <span className="font-bold text-slate-700">{stock.aiDiagnosis.recoveryDays}天</span>
+                     </div>
+
+                     <div className="flex items-center gap-1.5">
+                       <span className="text-xs text-slate-400">潛在空間</span>
+                       <span className="font-bold text-green-600">+{stock.aiDiagnosis.potentialUpside}%</span>
+                     </div>
+
+                     <div className="flex items-center gap-1">
+                        <Gauge size={14} className={analysis.opportunityScore >= 80 ? 'text-red-600' : 'text-orange-500'} />
+                        <span className={`font-bold font-mono text-base ${analysis.opportunityScore >= 80 ? 'text-red-600' : 'text-orange-500'}`}>
+                            {analysis.opportunityScore}
+                        </span>
+                     </div>
+                  </>
+                ) : (
+                   <div className="text-xs text-slate-400 pt-1">
+                      等待觸發信號...
+                   </div>
+                )}
+              </div>
+            </div>
+          );
+        }
+
+        function DetailView({ stock, analysis, onBack }) {
+          const { aiDiagnosis } = stock;
+          
+          const calculateResistancePercent = () => {
+            const totalRange = stock.fairValue - stock.price;
+            const resistanceOffset = stock.resistancePrice - stock.price;
+            
+            if (totalRange <= 0) return 0;
+            
+            let percent = (resistanceOffset / totalRange) * 100;
+            return Math.max(10, Math.min(90, percent));
+          };
+          
+          const resistancePercent = calculateResistancePercent();
+
+          return (
+            <div className="animate-in slide-in-from-right duration-300 pb-20">
+              <div className="flex items-center gap-2 mb-6 text-slate-500 cursor-pointer hover:text-slate-800" onClick={onBack}>
+                <ArrowLeft size={20} />
+                <span>返回清單</span>
+              </div>
+
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-2">
+                    {stock.name} <span className="text-xl text-slate-400 font-medium">{stock.id}</span>
+                  </h1>
+                  <p className="text-slate-500 text-sm mt-1">{stock.sector} | 市值 {stock.marketCapVal} 億</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-4xl font-bold font-mono tracking-tighter">{stock.price}</div>
+                  <div className="text-green-600 font-bold font-mono text-xl">{stock.change}% ▼</div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                 <div className="bg-slate-50 p-4 border-b border-slate-100 flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                       <NatureBadge tag={aiDiagnosis.natureTag} />
+                       <h2 className="font-bold text-slate-800">{aiDiagnosis.conclusion}</h2>
+                    </div>
+                    <div className="text-xs text-slate-400 font-mono">AI Model v4.0</div>
+                 </div>
+
+                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <div className="space-y-4">
+                       <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                          <Microscope size={16} /> 核心原因診斷
+                       </h3>
+                       <ul className="space-y-2">
+                          {aiDiagnosis.reasons.map((r, i) => (
+                             <li key={i} className="flex gap-2 text-sm text-slate-700">
+                                <span className="text-indigo-500 font-bold">•</span>
+                                {r}
+                             </li>
+                          ))}
+                       </ul>
+                    </div>
+
+                    <div className="space-y-4">
+                       <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                          <Calendar size={16} /> 修復時間預估
+                       </h3>
+                       <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 text-center">
+                          <div className="text-2xl font-bold text-slate-800">{aiDiagnosis.recoveryDays} <span className="text-sm font-normal text-slate-500">交易日</span></div>
+                       </div>
+                    </div>
+
+                    <div className="space-y-4 relative group/tooltip-container">
+                       <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                          <Target size={16} /> 潛在獲利空間
+                       </h3>
+                       <div>
+                          <div className="mb-4">
+                             <span className="text-4xl font-black text-green-600 tracking-tighter">+{aiDiagnosis.potentialUpside}%</span>
+                             <span className="text-xs text-slate-400 ml-2 font-medium uppercase tracking-wide">Upside Potential</span>
+                          </div>
+                          
+                          <div className="relative pt-6 pb-2"> 
+                             <div className="w-full h-3 bg-slate-100 rounded-full relative overflow-hidden">
+                                <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-r from-green-400 to-green-600 opacity-30"></div>
+                             </div>
+
+                             <div className="absolute left-0 top-4 pt-3 flex flex-col items-start">
+                                <div className="h-3 w-0.5 bg-slate-400 mb-1 mx-1"></div> 
+                                <span className="text-[10px] text-slate-400 font-bold uppercase">現價</span>
+                                <span className="text-xs font-bold text-slate-800">${stock.price}</span>
+                             </div>
+
+                             <div className="absolute right-0 top-4 pt-3 flex flex-col items-end">
+                                <div className="h-3 w-0.5 bg-green-500 mb-1 mx-1"></div> 
+                                <span className="text-[10px] text-green-600 font-bold uppercase">目標價</span>
+                                <span className="text-xs font-bold text-slate-800">${stock.fairValue}</span>
+                             </div>
+
+                             <div 
+                                className="absolute top-0 h-full flex flex-col items-center group/marker z-10"
+                                style={{ left: `${resistancePercent}%`, transform: 'translateX(-50%)' }}
+                             >
+                                <div className="mb-1 flex items-center gap-1 cursor-help relative">
+                                    <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100 whitespace-nowrap">
+                                        壓力位 ${stock.resistancePrice}
+                                    </span>
+                                    <HelpCircle size={12} className="text-red-400 hover:text-red-600 transition-colors" />
+
+                                    {/* Tooltip Content */}
+                                    <div className="tooltip-content opacity-0 absolute bottom-full mb-2 w-64 p-3 bg-slate-800 text-white text-xs rounded-lg shadow-xl pointer-events-none z-50 text-left">
+                                        <div className="flex items-center gap-1 font-bold text-yellow-400 mb-1">
+                                            <AlertTriangle size={12} />
+                                            減速帶警示
+                                        </div>
+                                        <p className="leading-relaxed text-slate-200">
+                                            壓力位就像是漲勢的「減速帶」，股價到了這裡容易撞到天花板而回檔。如果你追求穩健、不想冒風險，建議在接近壓力位時先賣出下車，確保獲利入袋為安。
+                                        </p>
+                                        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </div>
+
+                                <div className="w-0.5 h-full bg-red-400 dashed relative">
+                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full border-2 border-white shadow-sm"></div>
+                                </div>
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+
+                 <div className="bg-indigo-50/50 p-4 border-t border-slate-100 flex items-start gap-3">
+                    <Lightbulb size={20} className="text-indigo-500 mt-0.5" />
+                    <div>
+                       <div className="font-bold text-indigo-900 text-sm mb-0.5">操作策略建議</div>
+                       <p className="text-sm text-indigo-800">{aiDiagnosis.strategy}</p>
+                    </div>
+                 </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                 <div className="flex flex-col gap-2 mb-4">
+                    <div className="flex justify-between items-center">
+                        <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                          <Activity size={18} />
+                          股價與定錨點 (月線/季線)
+                        </h3>
+                    </div>
+                    
+                    <div className="text-xs text-slate-400 mt-1 px-1">
+                        <p>當藍色實線（現價）遠低於虛線時，中間的空隙即為潛在的反彈空間。</p>
+                    </div>
+                 </div>
+                 <div className="h-64 w-full">
+                   <ResponsiveContainer width="100%" height="100%">
+                     <AreaChart data={stock.history}>
+                       <defs>
+                         <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
+                           <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.1}/>
+                           <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
+                         </linearGradient>
+                       </defs>
+                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                       <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8'}} />
+                       <YAxis domain={['auto', 'auto']} axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8'}} />
+                       <Tooltip />
+                       <ReferenceLine y={stock.priceAvg20d} label={{ value: "月線 (20MA)", fill: '#3b82f6', fontSize: 11, position: 'insideTopRight' }} stroke="#3b82f6" strokeDasharray="3 3" />
+                       <ReferenceLine y={stock.priceAvg60d} label={{ value: "季線 (60MA)", fill: '#ef4444', fontSize: 11, position: 'insideTopRight' }} stroke="#ef4444" strokeDasharray="3 3" />
+                       <Area type="monotone" dataKey="price" stroke="#4f46e5" fillOpacity={1} fill="url(#colorPrice)" strokeWidth={2} />
+                     </AreaChart>
+                   </ResponsiveContainer>
+                 </div>
+              </div>
+              
+            </div>
+          );
+        }
+
+        function App() {
+          const [stocks, setStocks] = useState(INITIAL_STOCKS);
+          const [selectedStock, setSelectedStock] = useState(null);
+          const [strictMode, setStrictMode] = useState(true);
+          const [searchQuery, setSearchQuery] = useState('');
+
+          const processedStocks = useMemo(() => {
+            return stocks.map(stock => {
+              const analysis = analyzeStock(stock);
+              return { ...stock, analysis };
+            }).sort((a, b) => b.analysis.opportunityScore - a.analysis.opportunityScore); 
+          }, [stocks]);
+
+          const filteredStocks = processedStocks.filter(stock => {
+            const matchesSearch = stock.name.includes(searchQuery) || stock.id.includes(searchQuery);
+            if (strictMode) {
+                return matchesSearch && stock.analysis.isPassed;
+            } else {
+                return matchesSearch && stock.analysis.triggerTypes.length > 0;
+            }
+          });
+
+          return (
+            <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-20">
+              
+              <nav className="bg-white border-b border-slate-200 sticky top-0 z-10 px-4 py-3 shadow-sm">
+                <div className="max-w-5xl mx-auto flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                     <div className="bg-rose-500 text-white p-2 rounded-lg shadow-lg shadow-rose-200">
+                        <Activity size={20} strokeWidth={3} />
+                     </div>
+                     <div>
+                       <span className="font-bold text-xl tracking-tight block leading-none">Rebounder</span>
+                       <span className="text-xs text-slate-400 font-mono">v4.0 AI Diagnosis</span>
+                     </div>
+                  </div>
+                </div>
+              </nav>
+
+              <main className="max-w-5xl mx-auto px-4 py-6">
+                
+                {selectedStock ? (
+                  <DetailView stock={selectedStock} analysis={selectedStock.analysis} onBack={() => setSelectedStock(null)} />
+                ) : (
+                  <div className="animate-in fade-in duration-300">
+                    <div className="mb-8">
+                      <h1 className="text-2xl font-bold text-slate-900 mb-2">逆轉股票</h1>
+                      <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                         <span className="bg-white inline-flex items-center gap-1 px-3 py-1 rounded-full border border-slate-200 shadow-sm">
+                            <Activity size={14} className="text-orange-500" />
+                            <span>大盤 Beta 校正閥值: {(MARKET_DROP_TODAY * 1.5).toFixed(2)}%</span>
+                         </span>
+                         <span className="bg-indigo-50 text-indigo-700 inline-flex items-center gap-1 px-3 py-1 rounded-full border border-indigo-100 shadow-sm font-medium">
+                            核心層：流動性 + 獲利安全
+                         </span>
+                      </div>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+                      <div className="relative w-full md:w-64">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+                        <input 
+                          type="text" 
+                          placeholder="搜尋代號或名稱..." 
+                          className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="flex gap-4 w-full md:w-auto">
+                        <button 
+                          onClick={() => setStrictMode(!strictMode)}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all whitespace-nowrap w-full md:w-auto justify-center ${
+                            strictMode 
+                              ? 'bg-slate-900 border-slate-900 text-white shadow-md' 
+                              : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                          }`}
+                        >
+                          <ShieldCheck size={18} />
+                          <span>核心過濾 (Survival): {strictMode ? '已開啟' : '顯示全部'}</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center px-2">
+                        <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider">
+                          AI 診斷候選 ({filteredStocks.length})
+                        </h2>
+                        <div className="flex items-center gap-2 text-xs text-slate-400">
+                           <span>排序：機會指數 Score</span>
+                        </div>
+                      </div>
+
+                      {filteredStocks.length > 0 ? (
+                        filteredStocks.map(stock => (
+                          <StockCard 
+                            key={stock.id} 
+                            stock={stock} 
+                            analysis={stock.analysis}
+                            onClick={setSelectedStock} 
+                          />
+                        ))
+                      ) : (
+                        <div className="text-center py-20 bg-white rounded-xl border border-dashed border-slate-300">
+                          <div className="bg-slate-50 p-4 rounded-full inline-block mb-3">
+                            <CheckCircle size={32} className="text-green-500" />
+                          </div>
+                          <p className="text-slate-900 font-bold text-lg">目前市場無超跌標的</p>
+                          <p className="text-slate-500 mt-1">未偵測到符合 RSI &lt; 20 或 破布林下軌 之高流動性獲利股。</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </main>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
