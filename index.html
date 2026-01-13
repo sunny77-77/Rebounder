@@ -80,7 +80,7 @@
         const { useState, useMemo, useEffect } = React;
         const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, AreaChart, Area } = Recharts;
 
-        // --- Icons ---
+        // --- 1. Icons (Defined first) ---
         const IconBase = ({ children, size = 24, className = "", ...props }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>{children}</svg>
         );
@@ -104,7 +104,7 @@
         const ChevronRight = (props) => <IconBase {...props}><path d="m9 18 6-6-6-6"/></IconBase>;
         const Info = (props) => <IconBase {...props}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></IconBase>;
 
-        // --- Data ---
+        // --- 2. Data ---
         const FALLBACK_STOCKS = [
           {
             id: '2330', name: '台積電', price: 1680, low: 1675, change: -2.0, volume: 31237, avgVolume5dVal: 480, priceAvg20d: 1700, priceAvg60d: 1720, bollingerLower: 1650, marketCapVal: 435700, rsi6: 35, netBuy5d: -5000, institutionalHoldings: 78, eps4Q: 61.2, roe: 28.5, isExDividend: false, sector: '半導體', panicLevel: 35, fairValue: 1900, resistancePrice: 1750, 
@@ -144,8 +144,8 @@
             }
         };
 
-        // --- Logic ---
-        function analyzeStock(stock) {
+        // --- 3. Logic Functions ---
+        const analyzeStock = (stock) => {
           const analysis = { checks: [], triggerTypes: [], isPassed: true, failReason: null, opportunityScore: 0, deviation: 0 };
           const isLiquid = stock.avgVolume5dVal >= 0.1;
           const isProfitable = stock.eps4Q > 0;
@@ -164,17 +164,17 @@
               analysis.opportunityScore = Math.round((probScore * 0.5) + (deviationScore * 0.3) + (chipScore * 0.2));
           }
           return analysis;
-        }
+        };
 
-        // --- Components ---
-        function NatureBadge({ tag }) {
+        // --- 4. Sub-Components (Defined as const for strict ordering) ---
+        const NatureBadge = ({ tag }) => {
           if (tag === 'SHORT_TERM') return <span className="px-2 py-0.5 bg-green-100 text-green-800 rounded text-sm font-bold border border-green-200 inline-flex items-center gap-1 whitespace-nowrap">🟢 短期意外</span>;
           if (tag === 'EXTERNAL') return <span className="px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-sm font-bold border border-yellow-200 inline-flex items-center gap-1 whitespace-nowrap">🟡 外部環境</span>;
           if (tag === 'STRUCTURAL') return <span className="px-2 py-0.5 bg-red-100 text-red-800 rounded text-sm font-bold border border-red-200 inline-flex items-center gap-1 whitespace-nowrap">🔴 結構損壞</span>;
           return null;
-        }
+        };
 
-        function StockCard({ stock, analysis, onClick }) {
+        const StockCard = ({ stock, analysis, onClick }) => {
           const isPassed = analysis.isPassed;
           return (
             <div onClick={() => onClick(stock)} className={`relative bg-white p-3 rounded-xl border transition-all cursor-pointer hover:shadow-md active:scale-[0.98] ${!isPassed ? 'opacity-60 grayscale-[0.5] border-slate-200' : 'border-slate-100 hover:border-indigo-200 shadow-sm'}`}>
@@ -185,7 +185,7 @@
                   <div><h3 className="font-bold text-slate-800 text-lg leading-tight group-hover:text-indigo-600 transition-colors">{stock.name}</h3></div>
                 </div>
                 <div className="text-right">
-                  <div className="font-mono text-xl font-bold text-slate-900">{stock.price}</div>
+                  <div className="font-mono text-xl font-bold text-slate-900">{stock.price.toFixed(2)}</div>
                   <div className={`font-mono text-sm font-bold ${stock.change < 0 ? 'text-green-600' : 'text-red-600'}`}>{stock.change}%</div>
                 </div>
               </div>
@@ -212,9 +212,9 @@
               </div>
             </div>
           );
-        }
+        };
 
-        function DetailView({ stock, analysis, onBack, onPrev, onNext, hasPrev, hasNext }) {
+        const DetailView = ({ stock, analysis, onBack, onPrev, onNext, hasPrev, hasNext }) => {
           const { aiDiagnosis } = stock;
           const resistancePercent = useMemo(() => {
             const totalRange = stock.fairValue - stock.price;
@@ -243,7 +243,7 @@
                   <p className="text-slate-500 text-sm mt-1">{stock.sector} | 市值 {stock.marketCapVal} 億</p>
                 </div>
                 <div className="text-right">
-                  <div className="text-4xl font-bold font-mono tracking-tighter">{stock.price}</div>
+                  <div className="text-4xl font-bold font-mono tracking-tighter">{stock.price.toFixed(2)}</div>
                   <div className="text-green-600 font-bold font-mono text-xl">{stock.change}% ▼</div>
                 </div>
               </div>
@@ -282,11 +282,11 @@
                                       <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-r from-green-400 to-green-600 opacity-30"></div>
                                    </div>
                                    <div className="absolute top-0 h-full flex flex-col items-center z-10" style={{ left: `${resistancePercent}%`, transform: 'translateX(-50%)' }}>
-                                      <div className="mb-1"><span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100 whitespace-nowrap">壓力位 ${stock.resistancePrice}</span></div>
+                                      <div className="mb-1"><span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100 whitespace-nowrap">壓力位 ${stock.resistancePrice.toFixed(2)}</span></div>
                                       <div className="w-0.5 h-full bg-red-400 dashed relative"><div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full border-2 border-white shadow-sm"></div></div>
                                    </div>
                                </div>
-                               <div className="flex justify-between text-sm text-slate-400 mt-2"><span>現價 ${stock.price}</span><span>目標 ${stock.fairValue}</span></div>
+                               <div className="flex justify-between text-sm text-slate-400 mt-2"><span>現價 ${stock.price.toFixed(2)}</span><span>目標 ${stock.fairValue.toFixed(2)}</span></div>
                            </div>
                       </div>
 
@@ -411,7 +411,7 @@
                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                        <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8'}} />
                        <YAxis domain={['auto', 'auto']} axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8'}} />
-                       <Tooltip />
+                       <Tooltip formatter={(value) => value.toFixed(2)} />
                        <ReferenceLine y={stock.priceAvg20d} label={{ value: "月線 (20MA)", fill: '#3b82f6', fontSize: 11, position: 'insideTopRight' }} stroke="#3b82f6" strokeDasharray="3 3" />
                        <ReferenceLine y={stock.priceAvg60d} label={{ value: "季線 (60MA)", fill: '#ef4444', fontSize: 11, position: 'insideTopRight' }} stroke="#ef4444" strokeDasharray="3 3" />
                        <Area type="monotone" dataKey="price" stroke="#4f46e5" fillOpacity={1} fill="url(#colorPrice)" strokeWidth={2} />
@@ -421,9 +421,10 @@
               </div>
             </div>
           );
-        }
+        };
 
-        function App() {
+        // --- 5. Main App (Defined last to ensure sub-components exist) ---
+        const App = () => {
           const [stocks, setStocks] = useState([]);
           const [selectedStock, setSelectedStock] = useState(null);
           const [sortType, setSortType] = useState('score');
@@ -498,8 +499,8 @@
                         <div className="flex items-center gap-2 whitespace-nowrap">
                             <span className="text-sm font-bold text-slate-400 uppercase tracking-wider mr-1">排序依據:</span>
                             <button onClick={() => setSortType('score')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'score' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>智慧推薦</button>
-                            <button onClick={() => setSortType('recovery')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all flex items-center gap-1 ${sortType === 'recovery' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>回復時間 <SortAsc size={12} /></button>
-                            <button onClick={() => setSortType('upside')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all flex items-center gap-1 ${sortType === 'upside' ? 'bg-green-600 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>獲利空間 <SortDesc size={12} /></button>
+                            <button onClick={() => setSortType('recovery')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'recovery' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>回復時間最短</button>
+                            <button onClick={() => setSortType('upside')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'upside' ? 'bg-green-600 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>獲利空間最大</button>
                             <button onClick={() => setSortType('nature')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'nature' ? 'bg-rose-600 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>性質類型</button>
                         </div>
                     </div>
@@ -517,13 +518,16 @@
               </main>
             </div>
           );
-        }
+        };
 
-        const rootElement = document.getElementById('root');
-        if (rootElement) {
-            const root = ReactDOM.createRoot(rootElement);
-            root.render(<App />);
-        }
+        // --- 6. Render ---
+        setTimeout(() => {
+            const rootElement = document.getElementById('root');
+            if (rootElement) {
+                const root = ReactDOM.createRoot(rootElement);
+                root.render(<App />);
+            }
+        }, 100);
     </script>
 </body>
 </html>
