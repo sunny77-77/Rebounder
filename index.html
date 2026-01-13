@@ -551,41 +551,8 @@
 
               {/* Block 2: Diagnostics Row (Core Reasons | Upside | Recovery) - Adjusted to 1:1 ratio */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-                  
-                  {/* Col 1: Core Reasons & News (Takes 1/2 space) */}
-                  <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col h-full lg:col-span-1">
-                      <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2 mb-4">
-                          <Microscope size={16} /> 核心原因
-                      </h3>
-                      <ul className="space-y-3 mb-6"> {/* Removed flex-1 to keep spacing tighter with news */}
-                          {aiDiagnosis.reasons.map((r, i) => (
-                              <li key={i} className="flex gap-2 text-sm text-slate-700">
-                              <span className="text-indigo-500 font-bold mt-0.5">•</span>
-                              <span>{r}</span>
-                              </li>
-                          ))}
-                      </ul>
-                      
-                      {/* Incorporated News */}
-                      {stock.newsLinks && (
-                          <div className="pt-4 border-t border-slate-100 mt-auto">
-                              <h4 className="text-sm font-bold text-slate-400 flex items-center gap-1 mb-2">
-                                  <LinkIcon size={12} /> 新聞來源
-                              </h4>
-                              <div className="space-y-2">
-                                  {stock.newsLinks.map((link, idx) => (
-                                      <a href={link.url} key={idx} className="block group">
-                                          <div className="text-sm text-slate-600 group-hover:text-indigo-600 truncate transition-colors">
-                                              • {link.title}
-                                          </div>
-                                      </a>
-                                  ))}
-                              </div>
-                          </div>
-                      )}
-                  </div>
 
-                  {/* Col 2: Stacked Metrics (Upside & Recovery) (Takes 1/2 space) */}
+                  {/* Col 1: Stacked Metrics (Upside & Recovery) (Takes 1/2 space) */}
                   <div className="flex flex-col gap-4 lg:col-span-1">
                       
                       {/* Upside (Potential) */}
@@ -661,6 +628,40 @@
                       </div>
                       
                   </div>
+                  
+                  {/* Col 2: Core Reasons & News (Takes 1/2 space) */}
+                  <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col h-full lg:col-span-1">
+                      <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2 mb-4">
+                          <Microscope size={16} /> 核心原因
+                      </h3>
+                      <ul className="space-y-3 mb-6"> {/* Removed flex-1 to keep spacing tighter with news */}
+                          {aiDiagnosis.reasons.map((r, i) => (
+                              <li key={i} className="flex gap-2 text-sm text-slate-700">
+                              <span className="text-indigo-500 font-bold mt-0.5">•</span>
+                              <span>{r}</span>
+                              </li>
+                          ))}
+                      </ul>
+                      
+                      {/* Incorporated News */}
+                      {stock.newsLinks && (
+                          <div className="pt-4 border-t border-slate-100 mt-auto">
+                              <h4 className="text-sm font-bold text-slate-400 flex items-center gap-1 mb-2">
+                                  <LinkIcon size={12} /> 新聞來源
+                              </h4>
+                              <div className="space-y-2">
+                                  {stock.newsLinks.map((link, idx) => (
+                                      <a href={link.url} key={idx} className="block group">
+                                          <div className="text-sm text-slate-600 group-hover:text-indigo-600 truncate transition-colors">
+                                              • {link.title}
+                                          </div>
+                                      </a>
+                                  ))}
+                              </div>
+                          </div>
+                      )}
+                  </div>
+
               </div>
 
               <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-6">
