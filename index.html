@@ -138,6 +138,9 @@
 
         const apiService = {
             fetchMarketData: async () => {
+                // In a real app, this would fetch from the backend.
+                // For this demo file, we simulate a delay and return the fallback data
+                // to prevent CORS/Network errors in preview environments.
                 return new Promise((resolve) => {
                     setTimeout(() => resolve(FALLBACK_STOCKS), 800);
                 });
@@ -460,10 +463,6 @@
                     return getDays(a) - getDays(b);
                 }
                 if (sortType === 'upside') return b.aiDiagnosis.potentialUpside - a.aiDiagnosis.potentialUpside;
-                if (sortType === 'nature') {
-                    const score = { 'SHORT_TERM': 3, 'EXTERNAL': 2, 'STRUCTURAL': 1 };
-                    return (score[b.aiDiagnosis.natureTag] || 0) - (score[a.aiDiagnosis.natureTag] || 0);
-                }
                 return b.analysis.opportunityScore - a.analysis.opportunityScore;
             });
           }, [stocks, sortType]);
@@ -499,9 +498,8 @@
                         <div className="flex items-center gap-2 whitespace-nowrap">
                             <span className="text-sm font-bold text-slate-400 uppercase tracking-wider mr-1">排序依據:</span>
                             <button onClick={() => setSortType('score')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'score' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>智慧推薦</button>
-                            <button onClick={() => setSortType('recovery')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'recovery' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>回復時間最短</button>
-                            <button onClick={() => setSortType('upside')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'upside' ? 'bg-green-600 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>獲利空間最大</button>
-                            <button onClick={() => setSortType('nature')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'nature' ? 'bg-rose-600 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>性質類型</button>
+                            <button onClick={() => setSortType('recovery')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'recovery' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>回復時間：最短</button>
+                            <button onClick={() => setSortType('upside')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'upside' ? 'bg-green-600 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>獲利空間：最大</button>
                         </div>
                     </div>
 
