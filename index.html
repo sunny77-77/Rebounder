@@ -104,6 +104,8 @@
         const ChevronRight = (props) => <IconBase {...props}><path d="m9 18 6-6-6-6"/></IconBase>;
         const Info = (props) => <IconBase {...props}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></IconBase>;
         const Search = (props) => <IconBase {...props}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></IconBase>;
+        const FilterIcon = (props) => <IconBase {...props}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></IconBase>;
+        const X = (props) => <IconBase {...props}><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></IconBase>;
 
         // --- 2. Data ---
         const FALLBACK_STOCKS = [
@@ -139,60 +141,47 @@
 
         const apiService = {
             fetchMarketData: async () => {
-                // 定義要抓取資料的真實股票代號
                 const targetIDs = ['2330', '2454', '3037']; 
-                // 計算日期範圍：抓取過去60天的資料
                 const now = new Date();
                 const past = new Date(now);
                 past.setDate(now.getDate() - 60); 
                 const startDate = past.toISOString().split('T')[0];
                 
                 try {
-                    // 使用 FinMind API 獲取資料
                     const requests = targetIDs.map(id => 
                         fetch(`https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=${id}&start_date=${startDate}`)
                             .then(res => res.json())
                     );
                     
-                    // 等待所有請求完成
                     const results = await Promise.all(requests);
                     
-                    // 將真實資料合併到我們的應用程式狀態中
-                    // 注意：FinMind 免費版只提供價格，AI 診斷與新聞仍使用模擬資料
                     return FALLBACK_STOCKS.map(stock => {
-                        // 找到對應的 API 回傳結果
                         const res = results.find(r => r.data && r.data.length > 0 && r.data[0].stock_id === stock.id);
-                        
-                        // 如果沒抓到資料（例如 8298 地雷KY），就回傳原本的模擬資料
                         if (!res) return stock; 
                         
                         const dataPoints = res.data;
-                        const latest = dataPoints[dataPoints.length - 1]; // 最新一筆
-                        const prev = dataPoints.length > 1 ? dataPoints[dataPoints.length - 2] : null; // 前一筆
+                        const latest = dataPoints[dataPoints.length - 1]; 
+                        const prev = dataPoints.length > 1 ? dataPoints[dataPoints.length - 2] : null; 
                         
-                        // 計算漲跌幅
                         const price = latest.close;
                         const change = prev ? ((price - prev.close) / prev.close * 100) : 0;
                         
-                        // 轉換歷史資料格式給圖表使用 (YYYY-MM-DD -> MM/DD)
                         const history = dataPoints.slice(-10).map(d => ({
                             date: d.date.slice(5).replace('-', '/'),
                             price: d.close
                         }));
 
-                        // 合併更新後的資料
                         return {
                             ...stock,
                             price: price,
-                            change: parseFloat(change.toFixed(2)), // 格式化小數點
-                            volume: Math.round(latest.Trading_Volume / 1000), // 股轉張
+                            change: parseFloat(change.toFixed(2)),
+                            volume: Math.round(latest.Trading_Volume / 1000),
                             history: history.length > 0 ? history : stock.history
                         };
                     });
 
                 } catch (e) {
-                    console.error("FinMind API Error (可能是跨域或頻率限制):", e);
-                    // 如果 API 失敗，優雅降級使用模擬資料
+                    console.error("FinMind API Error:", e);
                     return new Promise(r => setTimeout(() => r(FALLBACK_STOCKS), 800));
                 }
             }
@@ -227,6 +216,59 @@
           if (tag === 'STRUCTURAL') return <span className="px-2 py-0.5 bg-red-100 text-red-800 rounded text-sm font-bold border border-red-200 inline-flex items-center gap-1 whitespace-nowrap">🔴 結構損壞</span>;
           return null;
         };
+
+        const Modal = ({ isOpen, onClose, children }) => {
+            if (!isOpen) return null;
+            return (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={onClose}></div>
+                    <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
+                        <button onClick={onClose} className="absolute top-4 right-4 p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors">
+                            <X size={20} />
+                        </button>
+                        <div className="p-6">
+                            {children}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // This component content is now inside the modal
+        const GuideContent = () => (
+          <div className="text-sm">
+            <h3 className="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
+              <Lightbulb size={20} className="text-yellow-500"/> 篩選邏輯與標籤說明
+            </h3>
+            <div className="space-y-6">
+              <div>
+                <h4 className="font-bold text-slate-500 text-xs uppercase mb-3 flex items-center gap-1 pb-1 border-b border-slate-100"><FilterIcon size={14} /> 嚴選標準</h4>
+                <ul className="space-y-3 text-slate-600 text-sm">
+                  <li className="flex items-start gap-2"><span className="text-indigo-500 font-bold mt-0.5">•</span> <span><b>流動性</b>：近五日均量 &gt; 1000 萬，確保進出容易。</span></li>
+                  <li className="flex items-start gap-2"><span className="text-indigo-500 font-bold mt-0.5">•</span> <span><b>基本面</b>：近四季 EPS &gt; 0，只選有賺錢的公司。</span></li>
+                  <li className="flex items-start gap-2"><span className="text-indigo-500 font-bold mt-0.5">•</span> <span><b>技術面</b>：RSI &lt; 30 或 股價跌破布林通道下軌，尋找超跌訊號。</span></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-500 text-xs uppercase mb-3 flex items-center gap-1 pb-1 border-b border-slate-100"><Info size={14} /> 性質標籤定義</h4>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <span className="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs font-bold border border-green-200 shrink-0 mt-0.5">🟢 短期意外</span>
+                    <span className="text-sm text-slate-600 leading-snug">錯殺，基本面無虞。通常是受短期消息影響，回彈速度最快。</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs font-bold border border-yellow-200 shrink-0 mt-0.5">🟡 外部環境</span>
+                    <span className="text-sm text-slate-600 leading-snug">受大盤修正或產業循環拖累。需要等待市場氣氛好轉。</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs font-bold border border-red-200 shrink-0 mt-0.5">🔴 結構損壞</span>
+                    <span className="text-sm text-slate-600 leading-snug">財務或營運有重大疑慮。風險極高，建議避開。</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
 
         const StockCard = ({ stock, analysis, onClick }) => {
           const isPassed = analysis.isPassed;
@@ -487,6 +529,7 @@
           const [isLoading, setIsLoading] = useState(true);
           const [lastUpdated, setLastUpdated] = useState('');
           const [searchQuery, setSearchQuery] = useState('');
+          const [showHelp, setShowHelp] = useState(false);
 
           useEffect(() => {
             const fetchData = async () => {
@@ -533,6 +576,10 @@
 
           return (
             <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-20">
+              <Modal isOpen={showHelp} onClose={() => setShowHelp(false)}>
+                  <GuideContent />
+              </Modal>
+
               <nav className="bg-white border-b border-slate-200 sticky top-0 z-10 px-4 py-3 shadow-sm">
                 <div className="max-w-5xl mx-auto flex justify-between items-center">
                   <div className="flex items-center gap-2">
@@ -571,13 +618,21 @@
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
-                        <div className="flex items-center gap-2 whitespace-nowrap pt-2 border-t border-slate-100">
-                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">排序:</span>
-                            <button onClick={() => setSortType('score')} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${sortType === 'score' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>智慧推薦</button>
-                            <button onClick={() => setSortType('recovery')} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${sortType === 'recovery' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>回復時間：最短</button>
-                            <button onClick={() => setSortType('upside')} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${sortType === 'upside' ? 'bg-green-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>獲利空間：最大</button>
+                        <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                            <div className="flex items-center gap-2 whitespace-nowrap overflow-x-auto scrollbar-hide">
+                                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">排序:</span>
+                                <button onClick={() => setSortType('score')} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${sortType === 'score' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>智慧推薦</button>
+                                <button onClick={() => setSortType('recovery')} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${sortType === 'recovery' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>回復時間：最短</button>
+                                <button onClick={() => setSortType('upside')} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${sortType === 'upside' ? 'bg-green-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>獲利空間：最大</button>
+                            </div>
+                            <button onClick={() => setShowHelp(true)} className="flex items-center gap-1 px-2 py-1.5 text-slate-400 hover:text-indigo-600 hover:bg-slate-50 rounded-lg transition-colors shrink-0 ml-2" title="說明">
+                                <HelpCircle size={14} />
+                                <span className="text-xs font-bold">股票篩選說明</span>
+                            </button>
                         </div>
                     </div>
+
+                    {/* Original GuideCard removed from here as per request to move it to popup */}
 
                     <div className="space-y-4">
                       {isLoading ? (
