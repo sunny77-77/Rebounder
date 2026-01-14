@@ -80,7 +80,7 @@
         const { useState, useMemo, useEffect } = React;
         const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, AreaChart, Area } = Recharts;
 
-        // --- 1. Icons (Defined first) ---
+        // --- 1. Icons ---
         const IconBase = ({ children, size = 24, className = "", ...props }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>{children}</svg>
         );
@@ -103,6 +103,7 @@
         const ChevronLeft = (props) => <IconBase {...props}><path d="m15 18-6-6 6-6"/></IconBase>;
         const ChevronRight = (props) => <IconBase {...props}><path d="m9 18 6-6-6-6"/></IconBase>;
         const Info = (props) => <IconBase {...props}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></IconBase>;
+        const Search = (props) => <IconBase {...props}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></IconBase>;
 
         // --- 2. Data ---
         const FALLBACK_STOCKS = [
@@ -114,7 +115,7 @@
             newsLinks: [{ title: '外資觀點：地緣風險不影響 2nm 領先地位', source: '財經日報', url: '#' }, { title: '台積電法說會前瞻：先進製程需求強勁', source: '科技新報', url: '#' }, { title: '全球半導體庫存去化順利，Q1 可望落底', source: '投資人周刊', url: '#' }]
           },
           {
-            id: '2454', name: '聯發科', price: 1410, low: 1400, change: -3.5, volume: 4250, avgVolume5dVal: 55, priceAvg20d: 1460, priceAvg60d: 1480, bollingerLower: 1420, marketCapVal: 22700, rsi6: 25, netBuy5d: 200, institutionalHoldings: 65, eps4Q: 66.6, roe: 27.1, isExDividend: false, sector: 'IC設計', panicLevel: 65, fairValue: 1650, resistancePrice: 1500,
+            id: '2454', name: '聯發科', price: 1410, low: 1400, change: -3.5, volume: 4250, avgVolume5dVal: 55, priceAvg20d: 1460, priceAvg60d: 1480, bollingerLower: 1420, marketCapVal: 22700, rsi6: 25, netBuy5d: 200, institutionalHoldings: 65, eps4Q: 66.6, roe: 27.1, isExDividend: false, sector: 'IC設計', panicLevel: 85, fairValue: 1650, resistancePrice: 1500,
             history: [{ date: '01/06', price: 1480 }, { date: '01/07', price: 1460 }, { date: '01/08', price: 1450 }, { date: '01/09', price: 1445 }, { date: '01/10', price: 1430 }, { date: '01/12', price: 1410 }],
             aiDiagnosis: { probability: 85, natureTag: 'SHORT_TERM', conclusion: '產品僅是延後出貨而非訂單消失，雖然市場因誤解而拋售，但大戶資金已開始逢低承接。', reasons: ['延後出貨效應：5G 旗艦晶片出貨延至 2月，導致 1月營收月減 12%。', '謠言澄清：市場傳聞陸系手機砍單，公司已發重訊嚴正否認。', '籌碼異常：股價破底但主力券商（美林、摩根）逆勢買超 800 張。'], recoveryDays: '10 ~ 15', volumeStatus: '窒息量', potentialUpside: 17, strategy: 'Strong Buy。建議分 3 日進場，首筆資金可於今日尾盤投入。' },
             similarHistory: [{ date: '2021.05', event: '供應鏈缺料疑慮', outcome: '澄清後股價連三紅，單周反彈 8%。' }],
@@ -138,12 +139,62 @@
 
         const apiService = {
             fetchMarketData: async () => {
-                // In a real app, this would fetch from the backend.
-                // For this demo file, we simulate a delay and return the fallback data
-                // to prevent CORS/Network errors in preview environments.
-                return new Promise((resolve) => {
-                    setTimeout(() => resolve(FALLBACK_STOCKS), 800);
-                });
+                // 定義要抓取資料的真實股票代號
+                const targetIDs = ['2330', '2454', '3037']; 
+                // 計算日期範圍：抓取過去60天的資料
+                const now = new Date();
+                const past = new Date(now);
+                past.setDate(now.getDate() - 60); 
+                const startDate = past.toISOString().split('T')[0];
+                
+                try {
+                    // 使用 FinMind API 獲取資料
+                    const requests = targetIDs.map(id => 
+                        fetch(`https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=${id}&start_date=${startDate}`)
+                            .then(res => res.json())
+                    );
+                    
+                    // 等待所有請求完成
+                    const results = await Promise.all(requests);
+                    
+                    // 將真實資料合併到我們的應用程式狀態中
+                    // 注意：FinMind 免費版只提供價格，AI 診斷與新聞仍使用模擬資料
+                    return FALLBACK_STOCKS.map(stock => {
+                        // 找到對應的 API 回傳結果
+                        const res = results.find(r => r.data && r.data.length > 0 && r.data[0].stock_id === stock.id);
+                        
+                        // 如果沒抓到資料（例如 8298 地雷KY），就回傳原本的模擬資料
+                        if (!res) return stock; 
+                        
+                        const dataPoints = res.data;
+                        const latest = dataPoints[dataPoints.length - 1]; // 最新一筆
+                        const prev = dataPoints.length > 1 ? dataPoints[dataPoints.length - 2] : null; // 前一筆
+                        
+                        // 計算漲跌幅
+                        const price = latest.close;
+                        const change = prev ? ((price - prev.close) / prev.close * 100) : 0;
+                        
+                        // 轉換歷史資料格式給圖表使用 (YYYY-MM-DD -> MM/DD)
+                        const history = dataPoints.slice(-10).map(d => ({
+                            date: d.date.slice(5).replace('-', '/'),
+                            price: d.close
+                        }));
+
+                        // 合併更新後的資料
+                        return {
+                            ...stock,
+                            price: price,
+                            change: parseFloat(change.toFixed(2)), // 格式化小數點
+                            volume: Math.round(latest.Trading_Volume / 1000), // 股轉張
+                            history: history.length > 0 ? history : stock.history
+                        };
+                    });
+
+                } catch (e) {
+                    console.error("FinMind API Error (可能是跨域或頻率限制):", e);
+                    // 如果 API 失敗，優雅降級使用模擬資料
+                    return new Promise(r => setTimeout(() => r(FALLBACK_STOCKS), 800));
+                }
             }
         };
 
@@ -273,8 +324,10 @@
                            <div className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2 mb-2 w-fit relative group/info cursor-help">
                              <Target size={16} /> 獲利空間 <Info size={14} className="text-slate-400" />
                              <div className="tooltip-content absolute bottom-full mb-2 w-64 p-3 bg-slate-800 text-white text-xs rounded-lg shadow-xl pointer-events-none z-50 text-left">
-                                 <div className="flex items-center gap-1 font-bold text-yellow-400 mb-1"><AlertTriangle size={12} /> 減速帶警示</div>
-                                 <p className="leading-relaxed text-slate-200">壓力位就像是漲勢的「減速帶」，股價到了這裡容易撞到天花板而回檔。</p>
+                                 <div className="space-y-2">
+                                     <p className="leading-relaxed text-slate-200"><span className="font-bold text-yellow-400">獲利空間：</span>預期的利潤潛力</p>
+                                     <p className="leading-relaxed text-slate-200"><span className="font-bold text-yellow-400">壓力位：</span>就像是漲勢的「減速帶」，股價到了這裡容易撞到天花板而回檔</p>
+                                 </div>
                                  <div className="absolute top-full left-4 -mt-1 border-4 border-transparent border-t-slate-800"></div>
                              </div>
                            </div>
@@ -297,7 +350,7 @@
                            <div className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2 mb-3 w-fit relative group/info cursor-help">
                                 <Calendar size={16} /> 回復時間 <Info size={14} className="text-slate-400" />
                                 <div className="tooltip-content absolute bottom-full mb-2 w-72 p-4 bg-slate-800 text-white text-xs rounded-lg shadow-xl pointer-events-none z-50 text-left -left-2 sm:left-0">
-                                    <div className="flex items-center gap-1 font-bold text-indigo-300 mb-2"><Lightbulb size={12} /> AI 怎麼算的？</div>
+                                    <div className="flex items-center gap-1 font-bold text-indigo-300 mb-2"><Lightbulb size={12} /> 回復時間計算方式</div>
                                     <p className="leading-relaxed text-slate-200 mb-2">我們會去翻「歷史舊帳」，看看以前發生類似事件時，股價花了幾天漲回來。</p>
                                     <p className="leading-relaxed text-slate-200">如果沒發生過，就會用統計學算出這類「跌過頭」的情況，通常需要多久回歸正常。</p>
                                     <div className="absolute top-full left-8 -mt-1 border-4 border-transparent border-t-slate-800"></div>
@@ -433,6 +486,7 @@
           const [sortType, setSortType] = useState('score');
           const [isLoading, setIsLoading] = useState(true);
           const [lastUpdated, setLastUpdated] = useState('');
+          const [searchQuery, setSearchQuery] = useState('');
 
           useEffect(() => {
             const fetchData = async () => {
@@ -456,7 +510,17 @@
           };
 
           const processedStocks = useMemo(() => {
-            const analyzed = stocks.map(stock => ({ ...stock, analysis: analyzeStock(stock) }));
+            // 1. Filter first
+            let filtered = stocks;
+            if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                filtered = stocks.filter(s => s.id.includes(q) || s.name.toLowerCase().includes(q));
+            }
+
+            // 2. Analyze
+            const analyzed = filtered.map(stock => ({ ...stock, analysis: analyzeStock(stock) }));
+            
+            // 3. Sort
             return analyzed.sort((a, b) => {
                 if (sortType === 'recovery') {
                     const getDays = (s) => isNaN(parseInt(s.aiDiagnosis.recoveryDays)) ? 999 : parseInt(s.aiDiagnosis.recoveryDays);
@@ -465,7 +529,7 @@
                 if (sortType === 'upside') return b.aiDiagnosis.potentialUpside - a.aiDiagnosis.potentialUpside;
                 return b.analysis.opportunityScore - a.analysis.opportunityScore;
             });
-          }, [stocks, sortType]);
+          }, [stocks, sortType, searchQuery]);
 
           return (
             <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-20">
@@ -476,7 +540,7 @@
                       <span className="font-bold text-xl tracking-tight text-slate-800">Rebounder</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    {lastUpdated && <span className="text-xs font-mono text-slate-400 hidden sm:inline">Updated: {lastUpdated}</span>}
+                    {lastUpdated && <span className="text-xs font-mono text-slate-400 hidden sm:inline">{lastUpdated} 收盤價</span>}
                     <button onClick={handleRefresh} disabled={isLoading} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors disabled:opacity-50"><RefreshCw size={20} className={isLoading ? "animate-spin" : ""} /></button>
                   </div>
                 </div>
@@ -495,11 +559,23 @@
                 ) : (
                   <div className="animate-in fade-in duration-300">
                     <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-200 mb-6 overflow-x-auto">
-                        <div className="flex items-center gap-2 whitespace-nowrap">
-                            <span className="text-sm font-bold text-slate-400 uppercase tracking-wider mr-1">排序依據:</span>
-                            <button onClick={() => setSortType('score')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'score' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>智慧推薦</button>
-                            <button onClick={() => setSortType('recovery')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'recovery' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>回復時間：最短</button>
-                            <button onClick={() => setSortType('upside')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'upside' ? 'bg-green-600 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>獲利空間：最大</button>
+                        <div className="mb-4 relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Search className="h-5 w-5 text-slate-400" />
+                            </div>
+                            <input
+                                type="text"
+                                className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-lg leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 sm:text-sm shadow-sm transition-all"
+                                placeholder="搜尋代號或名稱 (例如: 2330)"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </div>
+                        <div className="flex items-center gap-2 whitespace-nowrap pt-2 border-t border-slate-100">
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">排序:</span>
+                            <button onClick={() => setSortType('score')} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${sortType === 'score' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>智慧推薦</button>
+                            <button onClick={() => setSortType('recovery')} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${sortType === 'recovery' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>回復時間：最短</button>
+                            <button onClick={() => setSortType('upside')} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${sortType === 'upside' ? 'bg-green-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>獲利空間：最大</button>
                         </div>
                     </div>
 
@@ -508,7 +584,12 @@
                         <div className="flex flex-col items-center justify-center py-20 space-y-4"><div className="spinner"></div><p className="text-slate-400 text-sm animate-pulse">正在為您診斷市場數據...</p></div>
                       ) : (
                         processedStocks.length > 0 ? processedStocks.map(stock => <StockCard key={stock.id} stock={stock} analysis={stock.analysis} onClick={setSelectedStock} />) : 
-                        <div className="text-center py-20 bg-white rounded-xl border border-dashed border-slate-300"><div className="bg-slate-50 p-4 rounded-full inline-block mb-3"><CheckCircle size={32} className="text-green-500" /></div><p className="text-slate-900 font-bold text-lg">目前市場無超跌標的</p></div>
+                        <div className="text-center py-20 bg-white rounded-xl border border-dashed border-slate-300">
+                            <div className="bg-slate-50 p-4 rounded-full inline-block mb-3">
+                                {searchQuery ? <Search size={32} className="text-slate-400" /> : <CheckCircle size={32} className="text-green-500" />}
+                            </div>
+                            <p className="text-slate-900 font-bold text-lg">{searchQuery ? '找不到符合的個股' : '目前市場無超跌標的'}</p>
+                        </div>
                       )}
                     </div>
                   </div>
