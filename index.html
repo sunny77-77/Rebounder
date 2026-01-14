@@ -347,7 +347,7 @@
               {/* Summary Block - Tag on Left */}
               <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-6">
                   <div className="flex flex-col gap-4">
-                      <div className="flex items-start gap-3">
+                      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
                           <div className="shrink-0"><NatureBadge tag={aiDiagnosis.natureTag} /></div>
                           <p className="text-slate-700 leading-relaxed font-medium text-base">{aiDiagnosis.conclusion}</p>
                       </div>
@@ -605,7 +605,7 @@
                   />
                 ) : (
                   <div className="animate-in fade-in duration-300">
-                    <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-200 mb-6 overflow-x-auto">
+                    <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-200 mb-4 overflow-x-auto">
                         <div className="mb-4 relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Search className="h-5 w-5 text-slate-400" />
@@ -638,7 +638,7 @@
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                        <div className="flex items-center pt-2 border-t border-slate-100">
                             {/* Desktop Sorting */}
                             <div className="hidden sm:flex items-center gap-2 whitespace-nowrap overflow-x-auto scrollbar-hide">
                                 <span className="text-sm font-bold text-slate-400 uppercase tracking-wider mr-1">排序:</span>
@@ -646,11 +646,18 @@
                                 <button onClick={() => setSortType('recovery')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'recovery' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>回復時間：最短</button>
                                 <button onClick={() => setSortType('upside')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'upside' ? 'bg-green-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>獲利空間：最大</button>
                             </div>
-                            <button onClick={() => setShowHelp(true)} className="flex items-center gap-1 px-2 py-1.5 text-slate-400 hover:text-indigo-600 hover:bg-slate-50 rounded-lg transition-colors shrink-0 ml-auto sm:ml-2" title="說明">
-                                <HelpCircle size={16} />
-                                <span className="text-sm font-bold">股票篩選說明</span>
-                            </button>
                         </div>
+                    </div>
+
+                    {/* New Explainer Block */}
+                    <div className="flex items-start gap-2 mb-6 px-1">
+                        <Info size={16} className="text-slate-400 mt-1 shrink-0" />
+                        <p className="text-sm text-slate-500 leading-relaxed">
+                            AI 系統綜合流動性、基本面與技術指標，每日為您篩選具備反彈潛力的優質標的。
+                            <button onClick={() => setShowHelp(true)} className="text-indigo-600 font-bold hover:text-indigo-700 hover:underline ml-1">
+                                查看詳細規則
+                            </button>
+                        </p>
                     </div>
 
                     <div className="space-y-4">
