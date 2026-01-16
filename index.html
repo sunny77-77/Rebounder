@@ -40,24 +40,9 @@
             ReferenceLine, AreaChart, Area 
         } = RechartsObj;
 
-        // --- 1. Inline Icons (Replacing external lucide-react to fix UMD errors) ---
-        // Helper for creating icons
+        // --- 1. Inline Icons (Lucide-like) ---
         const CreateIcon = ({ children, size = 24, className = "", ...props }) => (
-            <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width={size} 
-                height={size} 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                className={className} 
-                {...props}
-            >
-                {children}
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>{children}</svg>
         );
 
         const ArrowLeft = (props) => <CreateIcon {...props}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></CreateIcon>;
@@ -66,15 +51,10 @@
         const XCircle = (props) => <CreateIcon {...props}><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></CreateIcon>;
         const Calendar = (props) => <CreateIcon {...props}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></CreateIcon>;
         const Target = (props) => <CreateIcon {...props}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></CreateIcon>;
-        const AlertTriangle = (props) => <CreateIcon {...props}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></CreateIcon>;
         const Lightbulb = (props) => <CreateIcon {...props}><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></CreateIcon>;
-        const HelpCircle = (props) => <CreateIcon {...props}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></CreateIcon>;
-        const History = (props) => <CreateIcon {...props}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></CreateIcon>;
         const ExternalLink = (props) => <CreateIcon {...props}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></CreateIcon>;
         const RefreshCw = (props) => <CreateIcon {...props}><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M16 8h5V3"/></CreateIcon>;
-        const SortAsc = (props) => <CreateIcon {...props}><path d="M11 5h10"/><path d="M11 9h7"/><path d="M11 13h4"/><path d="M3 17l3 3 3-3"/><path d="M6 18V4"/></CreateIcon>;
-        const SortDesc = (props) => <CreateIcon {...props}><path d="M11 5h10"/><path d="M11 9h7"/><path d="M11 13h4"/><path d="M3 17l3 3 3-3"/><path d="M6 18V4" transform="scale(1 -1) translate(0 -24)"/></CreateIcon>; // Simplified flip
-        const LinkIcon = (props) => <CreateIcon {...props}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></CreateIcon>;
+        const SortDesc = (props) => <CreateIcon {...props}><path d="M11 5h10"/><path d="M11 9h7"/><path d="M11 13h4"/><path d="M3 17l3 3 3-3"/><path d="M6 18V4" transform="scale(1 -1) translate(0 -24)"/></CreateIcon>;
         const ChevronLeft = (props) => <CreateIcon {...props}><polyline points="15 18 9 12 15 6"/></CreateIcon>;
         const ChevronRight = (props) => <CreateIcon {...props}><polyline points="9 18 15 12 9 6"/></CreateIcon>;
         const Info = (props) => <CreateIcon {...props}><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></CreateIcon>;
@@ -82,6 +62,9 @@
         const Filter = (props) => <CreateIcon {...props}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></CreateIcon>;
         const X = (props) => <CreateIcon {...props}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></CreateIcon>;
         const Microscope = (props) => <CreateIcon {...props}><path d="M6 18h8"/><path d="M7 21h6"/><path d="M10 10v6"/><path d="M9 7l3 3 2-2-3-3a.5.5 0 0 0-.7 0L9 7z"/><circle cx="12" cy="16" r="1" fill="currentColor"/></CreateIcon>;
+        const Moon = (props) => <CreateIcon {...props}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></CreateIcon>;
+        const AlertTriangle = (props) => <CreateIcon {...props}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></CreateIcon>;
+
 
         // --- Global Styles & Animations ---
         const globalStyles = `
@@ -94,7 +77,6 @@
           .scrollbar-hide::-webkit-scrollbar { display: none; }
           .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-          /* Tooltip Animations */
           .tooltip-content {
             transition: opacity 0.2s, transform 0.2s;
             transform: translateY(4px);
@@ -108,7 +90,6 @@
             transform: translateY(0);
           }
 
-          /* Loading Spinner */
           .spinner {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #4f46e5;
@@ -123,68 +104,192 @@
           }
         `;
 
-        // --- Data & Mock Data ---
-        const FALLBACK_STOCKS = [
-          {
-            id: '2330', name: '台積電', price: 1080, low: 1075, change: -2.0, volume: 31237, avgVolume5dVal: 480, priceAvg20d: 1100, priceAvg60d: 1120, bollingerLower: 1050, marketCapVal: 435700, rsi6: 35, netBuy5d: -5000, institutionalHoldings: 78, eps4Q: 61.2, roe: 28.5, isExDividend: false, sector: '半導體', panicLevel: 35, fairValue: 1250, resistancePrice: 1150, 
-            history: [{ date: '01/06', price: 1105 }, { date: '01/07', price: 1095 }, { date: '01/08', price: 1100 }, { date: '01/09', price: 1080 }, { date: '01/10', price: 1085 }, { date: '01/12', price: 1080 }],
-            aiDiagnosis: { probability: 65, natureTag: 'EXTERNAL', conclusion: '受國際局勢影響導致外資避險賣出，這並非公司營運出問題，而是外部因素造成的非理性下跌。', reasons: ['外資避險賣壓：因應中東地緣局勢升溫，外資單日提款 1.5 萬張。', '費半連動：美股 SOX 指數重挫 4.2%，拖累半導體權值股。', '錯殺性質：先進製程產能滿載，基本面未變，純屬資金面提款。'], recoveryDays: '15', volumeStatus: '量縮整理', potentialUpside: 13, strategy: '建議觀望，待站回五日線後分批佈局。' },
-            similarHistory: [{ date: '2022.02', event: '俄烏戰爭爆發', outcome: '股價急跌 15% 後，於 2 個月內收復失土並創新高。' }],
-            newsLinks: [{ title: '外資觀點：地緣風險不影響 2nm 領先地位', source: '財經日報', url: '#' }, { title: '台積電法說會前瞻：先進製程需求強勁', source: '科技新報', url: '#' }, { title: '全球半導體庫存去化順利，Q1 可望落底', source: '投資人周刊', url: '#' }]
-          },
-          {
-            id: '2454', name: '聯發科', price: 1410, low: 1400, change: -3.5, volume: 4250, avgVolume5dVal: 55, priceAvg20d: 1460, priceAvg60d: 1480, bollingerLower: 1420, marketCapVal: 22700, rsi6: 25, netBuy5d: 200, institutionalHoldings: 65, eps4Q: 66.6, roe: 27.1, isExDividend: false, sector: 'IC設計', panicLevel: 85, fairValue: 1650, resistancePrice: 1500,
-            history: [{ date: '01/06', price: 1480 }, { date: '01/07', price: 1460 }, { date: '01/08', price: 1450 }, { date: '01/09', price: 1445 }, { date: '01/10', price: 1430 }, { date: '01/12', price: 1410 }],
-            aiDiagnosis: { probability: 85, natureTag: 'SHORT_TERM', conclusion: '產品僅是延後出貨而非訂單消失，雖然市場因誤解而拋售，但大戶資金已開始逢低承接。', reasons: ['延後出貨效應：5G 旗艦晶片出貨延至 2月，導致 1月營收月減 12%。', '謠言澄清：市場傳聞陸系手機砍單，公司已發重訊嚴正否認。', '籌碼異常：股價破底但主力券商（美林、摩根）逆勢買超 800 張。'], recoveryDays: '12', volumeStatus: '窒息量', potentialUpside: 17, strategy: 'Strong Buy。建議分 3 日進場，首筆資金可於今日尾盤投入。' },
-            similarHistory: [{ date: '2021.05', event: '供應鏈缺料疑慮', outcome: '澄清後股價連三紅，單周反彈 8%。' }],
-            newsLinks: [{ title: '聯發科天璣 9500 實測數據曝光，效能超預期', source: '3C 科技網', url: '#' }, { title: '大摩重申聯發科「優於大盤」評等，目標價不變', source: '外資觀測站', url: '#' }, { title: '中國手機市場復甦，旗艦晶片需求看增', source: '產業快訊', url: '#' }]
-          },
-          {
-            id: '3037', name: '欣興', price: 175.0, low: 172.0, change: -4.5, volume: 12000, avgVolume5dVal: 20, priceAvg20d: 185.0, priceAvg60d: 195.0, bollingerLower: 178.0, marketCapVal: 2700, rsi6: 18, netBuy5d: -1500, institutionalHoldings: 40, eps4Q: 8.5, roe: 15.2, isExDividend: false, sector: 'PCB', panicLevel: 85, fairValue: 220, resistancePrice: 190,
-            history: [{ date: '01/06', price: 195 }, { date: '01/07', price: 190 }, { date: '01/08', price: 188 }, { date: '01/09', price: 185 }, { date: '01/10', price: 182 }, { date: '01/12', price: 175 }],
-            aiDiagnosis: { probability: 70, natureTag: 'EXTERNAL', conclusion: '受到同業負面消息拖累，引發投資人恐慌性賣出，導致目前籌碼狀態仍處於不穩定階段。', reasons: ['報價鬆動疑慮：日商 Ibiden 財報示警 ABF 需求放緩，引發族群修正。', '恐慌性賣出：融資維持率跌破 140% 警戒線，觸發散戶多殺多。', '投信停損：投信季底結帳賣壓湧現，連續 5 日賣超合計 6,200 張。'], recoveryDays: '22', volumeStatus: '爆量下殺', potentialUpside: 25, strategy: '急跌不接刀。待成交量縮至 5000 張以下再行介入。' },
-            similarHistory: [{ date: '2023.04', event: '庫存去化修正', outcome: '股價盤整 3 個月後才築底完成，屬L型復甦。' }],
-            newsLinks: [{ title: 'ABF 載板報價鬆動？業內人士：僅部分低階產品', source: '電子時報', url: '#' }, { title: '投信季底結帳名單出列，PCB 族群首當其衝', source: '理財網', url: '#' }, { title: 'Ibiden 財報不如預期，拖累亞洲載板股', source: '國際財經', url: '#' }]
-          },
-          {
-            id: '8298', name: '地雷KY', price: 32.0, change: -9.8, volume: 500, avgVolume5dVal: 0.08, priceAvg20d: 40, priceAvg60d: 45, bollingerLower: 30, marketCapVal: 50, rsi6: 10, netBuy5d: -50, institutionalHoldings: 2, eps4Q: -2.5, roe: -10, isExDividend: false, sector: '生技', panicLevel: 95, fairValue: 20, resistancePrice: 35,
-            history: Array(6).fill({date: '01/12', price: 32}),
-            aiDiagnosis: { probability: 10, natureTag: 'STRUCTURAL', conclusion: '由於帳目問題尚待釐清，公司財務結構存在高度不確定性，這屬於企業本質上的風險。', reasons: ['會計師保留意見：無法釐清海外子公司 5 億元帳款流向，財報卡關。', '大股東拋售：董事長配偶申報轉讓持股 2,000 張，引發掏空疑慮。', '本質風險：主要歐美客戶終止合約，營收面臨腰斬風險。'], recoveryDays: 'N/A', volumeStatus: '無量跌停', potentialUpside: 0, strategy: '賣出。不搶反彈。' },
-            similarHistory: [],
-            newsLinks: [{ title: '地雷KY 重訊記者會：無法解釋資金流向', source: '證交所', url: '#' }, { title: '金管會介入調查，地雷KY 恐面臨暫停交易', source: '新聞頭條', url: '#' }, { title: '小股東自救會成立，擬對經營層提告', source: '社會新聞', url: '#' }]
-          }
+        // --- Configuration for Real Data ---
+        const TARGET_STOCK_LIST = [
+            { id: '2330', name: '台積電', type: 'TW', sector: '半導體', fairValue: 1250, resistancePrice: 1150, marketCap: 275000 },
+            { id: '2454', name: '聯發科', type: 'TW', sector: 'IC設計', fairValue: 1650, resistancePrice: 1550, marketCap: 21500 },
+            { id: '2317', name: '鴻海', type: 'TW', sector: '電子代工', fairValue: 250, resistancePrice: 220, marketCap: 28000 },
+            { id: '2603', name: '長榮', type: 'TW', sector: '航運', fairValue: 250, resistancePrice: 230, marketCap: 4113.5 },
+            { id: '3231', name: '緯創', type: 'TW', sector: '電腦週邊', fairValue: 160, resistancePrice: 140, marketCap: 3500 },
+            { id: '3037', name: '欣興', type: 'TW', sector: 'PCB', fairValue: 220, resistancePrice: 190, marketCap: 2800 },
+            { id: '2382', name: '廣達', type: 'TW', sector: '電腦週邊', fairValue: 350, resistancePrice: 320, marketCap: 11200 },
+            { id: '6669', name: '緯穎', type: 'TW', sector: '雲端運算', fairValue: 2800, resistancePrice: 2600, marketCap: 4500 }
         ];
 
-        // --- Service Logic ---
+        // --- Service Logic (Yahoo API via Robust Proxies) ---
+        const PROXIES = [
+            'https://corsproxy.io/?',
+            'https://api.allorigins.win/raw?url=',
+            // Fallback to a third if needed, but these two are most reliable for Yahoo
+        ];
+
         const apiService = {
           fetchMarketData: async () => {
-            // Simulate API call.
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(FALLBACK_STOCKS);
-                }, 800);
-            });
+            
+            const fetchStock = async (def) => {
+                const symbol = `${def.id}.${def.type}`;
+                const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=3mo&interval=1d&includePrePost=true`;
+                
+                let lastError;
+                
+                // Try proxies sequentially
+                for (const proxyBase of PROXIES) {
+                    try {
+                        const fetchUrl = proxyBase + encodeURIComponent(yahooUrl);
+                        const response = await fetch(fetchUrl);
+                        
+                        if (!response.ok) throw new Error(`Proxy Error: ${response.status}`);
+                        
+                        const json = await response.json();
+                        if (!json.chart || !json.chart.result) throw new Error('Invalid Data Structure');
+                        
+                        const result = json.chart.result[0];
+                        const meta = result.meta;
+                        const quote = result.indicators.quote[0];
+                        const timestamps = result.timestamp;
+
+                        if (!timestamps || !quote.close) throw new Error('No Price Data');
+
+                        // Parse History (Get last 30 days for better chart)
+                        const history = timestamps.map((ts, i) => ({
+                            date: new Date(ts * 1000).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' }),
+                            price: quote.close[i] || null
+                        })).filter(h => h.price !== null).slice(-30);
+
+                        // Calculate Moving Averages
+                        const prices = quote.close.filter(p => p !== null);
+                        const ma20 = prices.slice(-20).reduce((a, b) => a + b, 0) / Math.min(20, prices.length);
+                        const ma60 = prices.slice(-60).reduce((a, b) => a + b, 0) / Math.min(60, prices.length);
+                        
+                        // Current Price
+                        const currentPrice = meta.regularMarketPrice;
+                        const prevClose = meta.chartPreviousClose;
+
+                        // Determine AI Diagnosis (Logic on Real Data)
+                        const changePercent = ((currentPrice - prevClose) / prevClose) * 100;
+                        const bias20 = ((currentPrice - ma20) / ma20) * 100;
+                        const bias60 = ((currentPrice - ma60) / ma60) * 100;
+                        
+                        // Dynamic logic for tags
+                        let isOversold = bias20 < -5 || changePercent < -3; 
+                        let isUptrend = currentPrice > ma60;
+                        
+                        let aiConclusion = "";
+                        let aiNature = "";
+                        let aiReasons = [];
+                        let aiStrategy = "";
+                        
+                        // Calculate simplified RSI (14)
+                        const calculateRSI = (values, period = 14) => {
+                            if (values.length < period + 1) return 50;
+                            let gains = 0, losses = 0;
+                            for (let i = values.length - period; i < values.length; i++) {
+                                const diff = values[i] - values[i-1];
+                                if (diff >= 0) gains += diff; else losses -= diff;
+                            }
+                            const avgGain = gains / period;
+                            const avgLoss = losses / period;
+                            if (avgLoss === 0) return 100;
+                            const rs = avgGain / avgLoss;
+                            return 100 - (100 / (1 + rs));
+                        };
+                        const rsiVal = Math.round(calculateRSI(prices, 6));
+
+                        // AI Rule Engine
+                        if (rsiVal < 25 || bias20 < -8) {
+                            aiNature = "SHORT_TERM";
+                            aiConclusion = `RSI 指標降至 ${rsiVal}，且月線乖離率達 ${bias20.toFixed(1)}%，顯示短線超賣嚴重，技術面醞釀反彈。`;
+                            aiReasons = ["極度超賣：RSI 進入 25 以下超賣區。", "負乖離過大：股價遠離均線，回歸機率大增。", "量能訊號：需觀察成交量是否止跌回穩。"];
+                            aiStrategy = "建議分批佈局，以搶反彈短打為主，停損設昨日低點。";
+                        } else if (isUptrend && changePercent < 0 && changePercent > -3) {
+                            aiNature = "EXTERNAL";
+                            aiConclusion = "股價雖隨大盤回檔，但仍守在季線之上，長多架構未被破壞。";
+                            aiReasons = ["趨勢支撐：季線 (60MA) 提供有力支撐。", "良性回檔：漲多後的正常修正，非結構性轉空。", "籌碼面：關注法人動向是否轉賣。"];
+                            aiStrategy = "季線附近尋求支撐買點，波段操作。";
+                        } else if (currentPrice < ma60 && currentPrice < ma20) {
+                            aiNature = "STRUCTURAL";
+                            aiConclusion = "股價跌破月線與季線，空方勢力轉強，短線可能持續整理。";
+                            aiReasons = ["均線蓋頭：上檔均線形成反壓，突破不易。", "趨勢轉弱：低點越墊越低，需等待底部型態。", "觀望為宜：目前非介入良機。"];
+                            aiStrategy = "建議觀望，待站回月線再行評估。";
+                        } else {
+                            aiNature = "EXTERNAL";
+                            aiConclusion = "目前股價處於區間震盪，方向尚未明確。";
+                            aiReasons = ["區間整理：箱型區間操作。", "量能不足：無攻擊量能。"];
+                            aiStrategy = "高出低進，區間操作。";
+                        }
+
+                        return {
+                            id: def.id,
+                            name: def.name,
+                            sector: def.sector,
+                            price: currentPrice,
+                            low: Math.min(...prices.slice(-5)),
+                            change: parseFloat(changePercent.toFixed(2)),
+                            volume: meta.regularMarketVolume ? Math.round(meta.regularMarketVolume / 1000) : 0,
+                            avgVolume5dVal: 500, // mock vol avg for now as history vol needs more parsing
+                            priceAvg20d: ma20,
+                            priceAvg60d: ma60,
+                            bollingerLower: ma20 * 0.95, 
+                            marketCapVal: def.marketCap, 
+                            rsi6: rsiVal,
+                            netBuy5d: 0, // Real net buy requires paid API
+                            institutionalHoldings: 0,
+                            eps4Q: 0,
+                            roe: 0,
+                            isExDividend: false,
+                            panicLevel: (100 - rsiVal),
+                            fairValue: def.fairValue,
+                            resistancePrice: def.resistancePrice,
+                            history: history,
+                            aiDiagnosis: {
+                                probability: rsiVal < 30 ? 80 : 50,
+                                natureTag: aiNature,
+                                conclusion: aiConclusion,
+                                reasons: aiReasons,
+                                recoveryDays: rsiVal < 30 ? '3-5' : 'N/A',
+                                volumeStatus: 'N/A',
+                                potentialUpside: Math.round(((def.fairValue - currentPrice)/currentPrice)*100),
+                                strategy: aiStrategy
+                            },
+                            similarHistory: [],
+                            newsLinks: [
+                                { title: `${def.name} 即時新聞與公告`, source: 'Yahoo股市', url: `https://tw.stock.yahoo.com/quote/${def.id}` },
+                            ]
+                        };
+
+                    } catch (e) {
+                        lastError = e;
+                        console.warn(`Proxy ${proxyBase} failed for ${def.id}:`, e);
+                        // Continue to next proxy
+                    }
+                }
+                
+                // If all proxies fail
+                console.error(`All proxies failed for ${def.id}`, lastError);
+                return null;
+            };
+
+            const promises = TARGET_STOCK_LIST.map(def => fetchStock(def));
+            const results = await Promise.all(promises);
+            // Filter out failures
+            return results.filter(stock => stock !== null);
           }
         };
 
         const analyzeStock = (stock) => {
           const analysis = { checks: [], triggerTypes: [], isPassed: true, failReason: null, opportunityScore: 0, deviation: 0 };
-          const isLiquid = stock.avgVolume5dVal >= 0.1;
-          const isProfitable = stock.eps4Q > 0;
-            
-          analysis.checks.push({ name: '流動性 > 1000萬', pass: isLiquid, value: 'Pass' });
-          analysis.checks.push({ name: '獲利安全 (EPS > 0)', pass: isProfitable, value: stock.eps4Q });
-            
-          if (stock.rsi6 < 30) analysis.triggerTypes.push('RSI_OVERSOLD');
-          if (stock.price < stock.bollingerLower) analysis.triggerTypes.push('BB_BREAK');
-
-          // Simple pass logic for demo
-          if (analysis.isPassed) {
-              const probScore = stock.aiDiagnosis.probability;
+          
+          if (!stock || stock.price === 0) {
+              analysis.isPassed = false;
+              analysis.failReason = "資料錯誤";
+          } else {
+              // Pass all real data for monitoring, but score them
+              analysis.opportunityScore = Math.min(100, stock.aiDiagnosis.potentialUpside * 2);
               analysis.deviation = ((stock.price - stock.priceAvg60d) / stock.priceAvg60d) * 100;
-              const deviationScore = Math.min(Math.abs(analysis.deviation) * 3.5, 100);
-              let chipScore = stock.netBuy5d > 0 ? 100 : (stock.institutionalHoldings > 50 ? 50 : 0);
-              analysis.opportunityScore = Math.round((probScore * 0.5) + (deviationScore * 0.3) + (chipScore * 0.2));
+              
+              // Filter logic: Only show "passed" if they have some rebound potential OR user wants to see all
+              // For this "Real Data" version, we show all successfully fetched stocks but mark them
+              analysis.isPassed = true; 
           }
           return analysis;
         };
@@ -192,9 +297,9 @@
         // --- Components ---
 
         const NatureBadge = ({ tag }) => {
-          if (tag === 'SHORT_TERM') return <span className="px-2 py-0.5 bg-green-100 text-green-800 rounded text-sm font-bold border border-green-200 inline-flex items-center gap-1 whitespace-nowrap">短期意外</span>;
-          if (tag === 'EXTERNAL') return <span className="px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-sm font-bold border border-yellow-200 inline-flex items-center gap-1 whitespace-nowrap">外部環境</span>;
-          if (tag === 'STRUCTURAL') return <span className="px-2 py-0.5 bg-red-100 text-red-800 rounded text-sm font-bold border border-red-200 inline-flex items-center gap-1 whitespace-nowrap">結構損壞</span>;
+          if (tag === 'SHORT_TERM') return <span className="px-2 py-0.5 bg-green-100 text-green-800 rounded text-sm font-bold border border-green-200 inline-flex items-center gap-1 whitespace-nowrap">短期反彈機會</span>;
+          if (tag === 'EXTERNAL') return <span className="px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-sm font-bold border border-yellow-200 inline-flex items-center gap-1 whitespace-nowrap">外部環境影響</span>;
+          if (tag === 'STRUCTURAL') return <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-sm font-bold border border-slate-200 inline-flex items-center gap-1 whitespace-nowrap">結構偏空</span>;
           return null;
         };
 
@@ -233,7 +338,7 @@
                 <h4 className="font-bold text-slate-500 text-sm uppercase mb-3 flex items-center gap-1 pb-1 border-b border-slate-100"><Info size={14} /> 性質標籤定義</h4>
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
-                    <span className="px-2 py-0.5 bg-green-100 text-green-800 rounded text-sm font-bold border border-green-200 shrink-0 mt-0.5">短期意外</span>
+                    <span className="px-2 py-0.5 bg-green-100 text-green-800 rounded text-sm font-bold border border-green-200 shrink-0 mt-0.5">短期反彈</span>
                     <span className="text-base text-slate-600 leading-snug">錯殺，基本面無虞。通常是受短期消息影響，回彈速度最快。</span>
                   </div>
                   <div className="flex items-start gap-3">
@@ -241,8 +346,8 @@
                     <span className="text-base text-slate-600 leading-snug">受大盤修正或產業循環拖累。需要等待市場氣氛好轉。</span>
                   </div>
                   <div className="flex items-start gap-3">
-                    <span className="px-2 py-0.5 bg-red-100 text-red-800 rounded text-sm font-bold border border-red-200 shrink-0 mt-0.5">結構損壞</span>
-                    <span className="text-base text-slate-600 leading-snug">財務或營運有重大疑慮。風險極高，建議避開。</span>
+                    <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-sm font-bold border border-slate-200 shrink-0 mt-0.5">結構偏空</span>
+                    <span className="text-base text-slate-600 leading-snug">趨勢向下，不建議貿然進場，僅供觀察。</span>
                   </div>
                 </div>
               </div>
@@ -252,6 +357,10 @@
 
         const StockCard = ({ stock, analysis, onClick }) => {
           const isPassed = analysis.isPassed;
+          // Change text color based on nature
+          const isNegative = stock.aiDiagnosis.natureTag === 'STRUCTURAL';
+          const upside = stock.aiDiagnosis.potentialUpside;
+
           return (
             <div onClick={() => onClick(stock)} className={`relative bg-white p-3 rounded-xl border transition-all cursor-pointer hover:shadow-md active:scale-[0.98] ${!isPassed ? 'opacity-60 grayscale-[0.5] border-slate-200' : 'border-slate-100 hover:border-indigo-200 shadow-sm'}`}>
               {!isPassed && <div className="absolute top-2 right-2 px-2 py-0.5 bg-slate-100 text-slate-500 text-sm font-bold rounded flex items-center gap-1"><XCircle size={12} /> {analysis.failReason || "未入選"}</div>}
@@ -271,17 +380,20 @@
                     <div className="text-base text-slate-600 leading-relaxed line-clamp-2">{stock.aiDiagnosis.conclusion}</div>
                 </div>
               )}
+              
               <div className="flex items-center gap-3 pt-2 border-t border-slate-50 overflow-x-auto scrollbar-hide">
                 {isPassed ? (
                   <React.Fragment>
                       <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
                         <span className="text-sm text-slate-400 uppercase tracking-wide">獲利空間</span>
-                        <span className="text-base font-bold text-green-600">+{stock.aiDiagnosis.potentialUpside}%</span>
+                        <span className={`text-base font-bold ${isNegative ? 'text-slate-400' : (upside > 0 ? 'text-red-600' : 'text-green-600')}`}>
+                            {isNegative ? '--' : (upside > 0 ? `+${upside}%` : `${upside}%`)}
+                        </span>
                       </div>
                       <div className="w-px h-3 bg-slate-200 shrink-0"></div>
                       <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
                         <span className="text-sm text-slate-400 uppercase tracking-wide">回復時間</span>
-                        <span className="text-base font-bold text-slate-700">{stock.aiDiagnosis.recoveryDays}天</span>
+                        <span className="text-base font-bold text-slate-700">{stock.aiDiagnosis.recoveryDays === 'N/A' ? '無法預測' : stock.aiDiagnosis.recoveryDays + '天'}</span>
                       </div>
                   </React.Fragment>
                 ) : (<div className="text-base text-slate-400">等待觸發信號...</div>)}
@@ -292,6 +404,7 @@
 
         const DetailView = ({ stock, analysis, onBack, onPrev, onNext, hasPrev, hasNext }) => {
           const { aiDiagnosis } = stock;
+          const upside = aiDiagnosis.potentialUpside;
           const resistancePercent = useMemo(() => {
             const totalRange = stock.fairValue - stock.price;
             const resistanceOffset = stock.resistancePrice - stock.price;
@@ -322,7 +435,7 @@
                 </div>
                 <div className="text-right">
                   <div className="text-4xl font-bold font-mono tracking-tighter">{stock.price.toFixed(2)}</div>
-                  <div className="text-green-600 font-bold font-mono text-xl">{stock.change}% ▼</div>
+                  <div className={`text-xl font-bold font-mono ${stock.change >= 0 ? 'text-red-500' : 'text-green-500'}`}>{stock.change}% {stock.change >= 0 ? '▲' : '▼'}</div>
                 </div>
               </div>
 
@@ -356,15 +469,21 @@
                               </div>
                             </div>
                             <div className="py-2"> 
-                                <div className="mb-2 flex items-baseline gap-2"><span className="text-4xl font-black text-green-600 tracking-tighter">+{aiDiagnosis.potentialUpside}%</span></div>
+                                <div className="mb-2 flex items-baseline gap-2">
+                                  <span className={`text-4xl font-black tracking-tighter ${upside > 0 ? 'text-red-500' : 'text-green-600'}`}>
+                                    {upside > 0 ? `+${upside}%` : `${upside}%`}
+                                  </span>
+                                </div>
                                 <div className="relative pt-6 pb-2"> 
                                     <div className="w-full h-3 bg-slate-100 rounded-full relative overflow-hidden">
-                                      <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-r from-green-400 to-green-600 opacity-30"></div>
+                                      <div className={`absolute left-0 top-0 h-full w-full opacity-30 ${upside > 0 ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-green-400 to-green-600'}`}></div>
                                     </div>
-                                    <div className="absolute top-0 h-full flex flex-col items-center z-10" style={{ left: `${resistancePercent}%`, transform: 'translateX(-50%)' }}>
-                                      <div className="mb-1"><span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100 whitespace-nowrap">壓力位 ${stock.resistancePrice.toFixed(2)}</span></div>
-                                      <div className="w-0.5 h-full bg-red-400 dashed relative"><div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full border-2 border-white shadow-sm"></div></div>
-                                    </div>
+                                    {upside > 0 && (
+                                      <div className="absolute top-0 h-full flex flex-col items-center z-10" style={{ left: `${resistancePercent}%`, transform: 'translateX(-50%)' }}>
+                                        <div className="mb-1"><span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 whitespace-nowrap">壓力位 ${stock.resistancePrice.toFixed(2)}</span></div>
+                                        <div className="w-0.5 h-full bg-slate-400 dashed relative"><div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-slate-500 rounded-full border-2 border-white shadow-sm"></div></div>
+                                      </div>
+                                    )}
                                 </div>
                                 <div className="flex justify-between text-sm text-slate-400 mt-2"><span>現價 ${stock.price.toFixed(2)}</span><span>目標 ${stock.fairValue.toFixed(2)}</span></div>
                             </div>
@@ -381,66 +500,52 @@
                                  </div>
                             </div>
                             <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-black text-slate-800 tracking-tighter">{isNaN(recoveryDays) ? 'N/A' : recoveryDays}</span>
-                                <span className="text-sm font-bold text-slate-500">交易日</span>
+                                <span className={`font-black text-slate-800 tracking-tighter ${isNaN(recoveryDays) ? 'text-3xl' : 'text-4xl'}`}>
+                                    {isNaN(recoveryDays) ? '無法預測' : recoveryDays}
+                                </span>
+                                {!isNaN(recoveryDays) && <span className="text-sm font-bold text-slate-500">交易日</span>}
                             </div>
                              
-                            {/* Conditional Subtext */}
-                            {!hasHistory && (
-                              <p className="text-sm text-slate-400 mb-4">
-                                基於技術指標乖離率與量能推算
-                              </p>
-                            )}
+                            {/* Conditional Content: Only show details if predictable */}
+                            {!isNaN(recoveryDays) && (
+                                <React.Fragment>
+                                    {!hasHistory && (
+                                      <p className="text-sm text-slate-400 mb-4">
+                                        基於技術指標乖離率與量能推算
+                                      </p>
+                                    )}
 
-                            {/* Conditional Content: History vs Technical Basis */}
-                            <div className="mt-auto pt-4 border-t border-slate-100">
-                                {hasHistory ? (
-                                    <React.Fragment>
-                                            <h4 className="text-sm font-bold text-slate-500 mb-2">
-                                                  相似事件
-                                            </h4>
-                                            <div className="space-y-2">
-                                                {stock.similarHistory.map((item, idx) => (
-                                                    <div key={idx} className="bg-slate-100 p-3 rounded-lg">
-                                                        <div className="flex justify-between items-baseline mb-1">
-                                                            <div className="font-bold text-sm text-slate-800">{item.event}</div>
-                                                            <span className="text-sm text-slate-500 font-mono shrink-0 ml-2">{item.date}</span>
+                                    <div className="mt-auto pt-4 border-t border-slate-100">
+                                        <React.Fragment>
+                                                <h4 className="text-sm font-bold text-slate-500 flex items-center gap-1 mb-2">
+                                                        <Activity size={12} /> 估算依據：技術乖離模型
+                                                </h4>
+                                                <div className="space-y-2">
+                                                    <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                                                        <div className="flex justify-between items-center mb-1">
+                                                            <span className="text-sm text-slate-500">季線乖離率 (Bias)</span>
+                                                            <span className={`text-sm font-bold font-mono ${analysis.deviation < -10 ? 'text-green-600' : 'text-slate-700'}`}>
+                                                                {analysis.deviation ? analysis.deviation.toFixed(2) : '0.00'}%
+                                                            </span>
                                                         </div>
-                                                        <div className="text-base text-slate-600 leading-relaxed">{item.outcome}</div>
+                                                        <div className="flex justify-between items-center">
+                                                            <span className="text-sm text-slate-500">RSI (6) 強度</span>
+                                                            <span className={`text-sm font-bold font-mono ${stock.rsi6 < 20 ? 'text-red-500' : 'text-slate-700'}`}>
+                                                                {stock.rsi6}
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                ))}
-                                            </div>
-                                    </React.Fragment>
-                                ) : (
-                                    <React.Fragment>
-                                            <h4 className="text-sm font-bold text-slate-500 flex items-center gap-1 mb-2">
-                                                 <Activity size={12} /> 估算依據：技術乖離模型
-                                            </h4>
-                                            <div className="space-y-2">
-                                                <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                                                    <div className="flex justify-between items-center mb-1">
-                                                        <span className="text-sm text-slate-500">季線乖離率 (Bias)</span>
-                                                        <span className={`text-sm font-bold font-mono ${analysis.deviation < -10 ? 'text-green-600' : 'text-slate-700'}`}>
-                                                            {analysis.deviation ? analysis.deviation.toFixed(2) : '0.00'}%
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex justify-between items-center">
-                                                        <span className="text-sm text-slate-500">RSI (6) 強度</span>
-                                                        <span className={`text-sm font-bold font-mono ${stock.rsi6 < 20 ? 'text-red-500' : 'text-slate-700'}`}>
-                                                            {stock.rsi6}
-                                                        </span>
+                                                    <div className="flex gap-2 items-start">
+                                                            <div className="mt-0.5 w-1 h-1 rounded-full bg-slate-300 shrink-0"></div>
+                                                            <p className="text-sm text-slate-400 leading-snug">
+                                                                即時運算：根據即時股價動態計算技術指標。
+                                                            </p>
                                                     </div>
                                                 </div>
-                                                <div className="flex gap-2 items-start">
-                                                     <div className="mt-0.5 w-1 h-1 rounded-full bg-slate-300 shrink-0"></div>
-                                                     <p className="text-sm text-slate-400 leading-snug">
-                                                         因無高度相似的歷史事件，系統改以「均值回歸標準差」模型估算修復時間。
-                                                     </p>
-                                                </div>
-                                            </div>
-                                    </React.Fragment>
-                                )}
-                            </div>
+                                        </React.Fragment>
+                                    </div>
+                                </React.Fragment>
+                            )}
                       </div>
                   </div>
                    
@@ -512,16 +617,28 @@
           const [lastUpdated, setLastUpdated] = useState('');
           const [searchQuery, setSearchQuery] = useState('');
           const [showHelp, setShowHelp] = useState(false);
+          const [fetchError, setFetchError] = useState(false);
 
           useEffect(() => {
             const fetchData = async () => {
                 setIsLoading(true);
+                setFetchError(false);
                 try {
                     const data = await apiService.fetchMarketData();
-                    setStocks(data);
+                    
+                    if (data && data.length > 0) {
+                        setStocks(data);
+                    } else {
+                        // If Real Data fetch returns 0 items, it means ALL proxies failed.
+                        setFetchError(true);
+                    }
+                    
                     const today = new Date();
                     setLastUpdated(`${today.getFullYear()}/${(today.getMonth()+1).toString().padStart(2, '0')}/${today.getDate().toString().padStart(2, '0')}`);
-                } catch (error) { console.error(error); } 
+                } catch (error) { 
+                    console.error("Main fetch error:", error);
+                    setFetchError(true);
+                } 
                 finally { setIsLoading(false); }
             };
             fetchData();
@@ -529,8 +646,13 @@
 
           const handleRefresh = async () => {
               setIsLoading(true);
+              setFetchError(false);
               const data = await apiService.fetchMarketData();
-              setStocks(data);
+              if (data && data.length > 0) {
+                  setStocks(data);
+              } else {
+                  setFetchError(true);
+              }
               setIsLoading(false);
           };
 
@@ -545,8 +667,11 @@
             // 2. Analyze
             const analyzed = filtered.map(stock => ({ ...stock, analysis: analyzeStock(stock) }));
               
-            // 3. Sort
-            return analyzed.sort((a, b) => {
+            // 3. Filter Negative Upside (Hide stocks with no profit potential)
+            const positiveStocks = analyzed.filter(stock => stock.aiDiagnosis.potentialUpside > 0);
+
+            // 4. Sort
+            return positiveStocks.sort((a, b) => {
                 if (sortType === 'recovery') {
                     const getDays = (s) => isNaN(parseInt(s.aiDiagnosis.recoveryDays)) ? 999 : parseInt(s.aiDiagnosis.recoveryDays);
                     return getDays(a) - getDays(b);
@@ -568,9 +693,12 @@
                   <div className="flex items-center gap-2">
                       <div className="bg-rose-500 text-white p-2 rounded-lg shadow-lg shadow-rose-200"><Activity size={20} strokeWidth={3} /></div>
                       <span className="font-bold text-xl tracking-tight text-slate-800">Rebounder</span>
+                      <span className="ml-2 text-xs font-bold px-2 py-0.5 rounded-full border bg-blue-50 text-blue-600 border-blue-200 hidden sm:inline-block">
+                          Live API
+                      </span>
                   </div>
                   <div className="flex items-center gap-3">
-                    {lastUpdated && <span className="text-sm font-mono text-slate-400 hidden sm:inline">{lastUpdated} 收盤價</span>}
+                    {lastUpdated && <span className="text-sm font-mono text-slate-400 hidden sm:inline">{lastUpdated} 更新</span>}
                     <button onClick={handleRefresh} disabled={isLoading} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors disabled:opacity-50"><RefreshCw size={20} className={isLoading ? "animate-spin" : ""} /></button>
                   </div>
                 </div>
@@ -622,7 +750,7 @@
                                     onChange={(e) => setSortType(e.target.value)}
                                     className="w-full p-3 bg-white border border-slate-200 rounded-xl appearance-none text-base font-bold text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 >
-                                    <option value="score">智慧推薦</option>
+                                    <option value="score">綜合評分</option>
                                     <option value="recovery">回復時間：最短</option>
                                     <option value="upside">獲利空間：最大</option>
                                 </select>
@@ -636,7 +764,7 @@
                             {/* Desktop Sorting */}
                             <div className="hidden sm:flex items-center gap-2 whitespace-nowrap overflow-x-auto scrollbar-hide">
                                 <span className="text-sm font-bold text-slate-400 uppercase tracking-wider mr-1">排序:</span>
-                                <button onClick={() => setSortType('score')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'score' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>智慧推薦</button>
+                                <button onClick={() => setSortType('score')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'score' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>綜合評分</button>
                                 <button onClick={() => setSortType('recovery')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'recovery' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>回復時間：最短</button>
                                 <button onClick={() => setSortType('upside')} className={`px-3 py-1.5 rounded-full text-sm font-bold transition-all ${sortType === 'upside' ? 'bg-green-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>獲利空間：最大</button>
                             </div>
@@ -645,7 +773,16 @@
 
                     <div className="space-y-4">
                       {isLoading ? (
-                        <div className="flex flex-col items-center justify-center py-20 space-y-4"><div className="spinner"></div><p className="text-slate-400 text-base animate-pulse">正在為您診斷市場數據...</p></div>
+                        <div className="flex flex-col items-center justify-center py-20 space-y-4"><div className="spinner"></div><p className="text-slate-400 text-base animate-pulse">正在為您連線至 Yahoo Finance...</p></div>
+                      ) : fetchError ? (
+                         <div className="text-center py-20 bg-red-50 rounded-xl border border-red-100">
+                            <div className="bg-white p-4 rounded-full inline-block mb-3 shadow-sm border border-red-100">
+                                <AlertTriangle size={32} className="text-red-500" />
+                            </div>
+                            <h3 className="text-slate-900 font-bold text-lg mb-1">無法取得即時資料</h3>
+                            <p className="text-slate-500 mb-4 max-w-xs mx-auto">連線至外部 API 失敗，這可能是因為瀏覽器的安全性限制或網路問題。</p>
+                            <button onClick={handleRefresh} className="px-4 py-2 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600 transition-colors">重試連線</button>
+                        </div>
                       ) : (
                         processedStocks.length > 0 ? processedStocks.map(stock => <StockCard key={stock.id} stock={stock} analysis={stock.analysis} onClick={setSelectedStock} />) : 
                         <div className="text-center py-20 bg-white rounded-xl border border-dashed border-slate-300">
